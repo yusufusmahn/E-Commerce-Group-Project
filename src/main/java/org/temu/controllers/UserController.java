@@ -3,6 +3,7 @@ package org.temu.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.temu.dtos.requests.*;
 import org.temu.dtos.responses.*;
@@ -49,4 +50,16 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(e.getMessage(), false), HttpStatus.BAD_REQUEST);
         }
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ApiResponse> getUserById(@PathVariable("id") String id, Authentication authentication) {
+//        try {
+//            String currentUserEmail = authentication.getName();
+//            UserResponse response = userService.getUserById(id, currentUserEmail);
+//            return new ResponseEntity<>(new ApiResponse(response, true), HttpStatus.OK);
+//        } catch (TemuException e) {
+//            return new ResponseEntity<>(new ApiResponse(e.getMessage(), false), HttpStatus.FORBIDDEN);
+//        }
+//    }
+
 }
