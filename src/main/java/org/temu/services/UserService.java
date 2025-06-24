@@ -8,4 +8,5 @@ public interface UserService {
     UserResponse registerUser(RegisterUserRequest request);
     UserResponse loginUser(LoginUserRequest request);
     UserResponse getUserById(String id);
+    //    UserResponse getUserById(String id, String email);
 }
