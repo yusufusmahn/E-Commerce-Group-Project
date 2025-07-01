@@ -1,4 +1,4 @@
-package org.temu.dtos.requests;
+package org.jumia.dtos.requests;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
