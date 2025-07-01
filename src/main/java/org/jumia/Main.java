@@ -1,4 +1,4 @@
-package org.temu;
+package org.jumia;
 
 
 import org.springframework.boot.SpringApplication;
