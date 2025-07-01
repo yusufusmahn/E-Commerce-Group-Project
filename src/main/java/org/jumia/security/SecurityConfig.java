@@ -47,21 +47,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection for APIs
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll() // Public endpoints
-                        .requestMatchers("/api/users/**").authenticated() // General user endpoints
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin endpoints
-                        .requestMatchers("/api/seller/**").hasRole("SELLER") // Seller endpoints
+                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .requestMatchers("/api/users/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/seller/**").hasRole("SELLER")
 //                        .requestMatchers("/api/seller/**").hasAuthority("ROLE_SELLER")
 
-                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER") // Customer endpoints
-                        .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN") // Super Admin endpoints
-                        .anyRequest().authenticated() // Protect all other endpoints
+                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
-                        .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).maxAgeInSeconds(31536000)) // Enable HSTS
+                        .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).maxAgeInSeconds(31536000))
                 );
         return http.build();
     }
