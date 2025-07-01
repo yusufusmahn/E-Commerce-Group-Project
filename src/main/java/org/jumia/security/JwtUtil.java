@@ -77,7 +77,7 @@ public class JwtUtil {
 
     public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("roles", List.class); 
+        return claims.get("roles", List.class);
     }
 
 
