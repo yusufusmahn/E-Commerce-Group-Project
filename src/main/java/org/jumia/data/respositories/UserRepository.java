@@ -14,7 +14,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     // Find users by email containing a substring
     List<User> findByEmailContainingIgnoreCase(String email);
 
-    // Find users by email containing a substring and role
     List<User> findByEmailContainingIgnoreCaseAndRolesContaining(String email, Role role);
 
 
