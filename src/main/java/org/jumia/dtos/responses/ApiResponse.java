@@ -1,4 +1,4 @@
-package org.temu.dtos.responses;
+package org.jumia.dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
