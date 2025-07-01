@@ -1,4 +1,4 @@
-package org.temu.data.models;
+package org.jumia.data.models;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -19,6 +19,12 @@ public class User {
 //    private String role;
 //    private Set<Role> roles; // Add roles
     private Set<Role> roles = new HashSet<>();
+    private String storeName; // Optional
+
+
+    private String contactInfo; // Added contactInfo
+    private String description;
+    private boolean superAdmin = false; // Add this field
 
 
 }
