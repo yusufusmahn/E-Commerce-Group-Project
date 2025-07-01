@@ -1,8 +1,10 @@
-package org.temu.data.models;
+package org.jumia.data.models;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Data
 @Document(collection = "products")
@@ -14,5 +16,9 @@ public class Product {
     private String description;
     private Double price;
     private Integer quantityAvailable;
+    private String sellerId;
+    private String imageUrl; // New field for the image URL
+
+
 
 }
