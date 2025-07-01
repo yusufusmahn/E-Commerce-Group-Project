@@ -41,16 +41,11 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /**
-     * Generate a new JWT token for the given username.
-     *
-     * @param username the username to include in the token
-     * @return the generated JWT token
-     */
+
     public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles) // Add roles as a claim
+                .claim("roles", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS512)
@@ -82,7 +77,7 @@ public class JwtUtil {
 
     public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("roles", List.class); // Retrieve the roles claim
+        return claims.get("roles", List.class); 
     }
 
 
