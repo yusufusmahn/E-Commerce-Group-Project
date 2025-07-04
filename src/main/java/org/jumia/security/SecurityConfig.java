@@ -3,6 +3,8 @@ package org.jumia.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 //import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,15 +51,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        .requestMatchers("/api/users/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/seller/**").hasRole("SELLER")
+                                .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
+                                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                                .requestMatchers("/api/users/**").authenticated()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
+                                .requestMatchers("/api/seller/**").hasRole("SELLER")
 //                        .requestMatchers("/api/seller/**").hasAuthority("ROLE_SELLER")
 
-                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
@@ -65,6 +68,19 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+
+
+        @Bean
+        public RoleHierarchy roleHierarchy() {
+            RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+            roleHierarchy.setHierarchy("""
+            ROLE_SUPER_ADMIN > ROLE_ADMIN
+            ROLE_ADMIN > ROLE_SELLER
+            ROLE_SELLER > ROLE_CUSTOMER
+        """);
+            return roleHierarchy;
+        }
+
 
 
 }
