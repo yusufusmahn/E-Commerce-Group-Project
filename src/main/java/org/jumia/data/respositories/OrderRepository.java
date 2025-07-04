@@ -11,5 +11,6 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findBySellerIdAndCreatedAtBetween(String sellerId, LocalDateTime startDate, LocalDateTime endDate);
     long countBySellerId(String userId);
     List<Order> findBySellerIdAndStatus(String sellerId, String status);
+    List<Order> findBySellerId(String sellerId);
 
 }
