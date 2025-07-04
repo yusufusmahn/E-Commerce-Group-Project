@@ -1,0 +1,55 @@
+package org.jumia.controllers.Admin;
+
+import org.jumia.dtos.requests.CreateProductRequest;
+import org.jumia.dtos.requests.UpdateProductRequest;
+import org.jumia.dtos.responses.ProductResponse;
+import org.jumia.services.admin.AdminProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/products")
+public class AdminProductController {
+
+    @Autowired
+    private AdminProductService adminProductService;
+
+    // 🔐 SUPER_ADMIN only
+    @PostMapping
+    public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody CreateProductRequest request) {
+        ProductResponse response = adminProductService.addProductAsAdmin(request);
+        return ResponseEntity.ok(response);
+    }
+
+    // 🔐 ADMIN or SUPER_ADMIN
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id, @Valid @RequestBody UpdateProductRequest request) {
+        ProductResponse updated = adminProductService.updateProductAsAdmin(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
+    // 🔐 SUPER_ADMIN only
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
+        adminProductService.deleteProductAsAdmin(id);
+        return ResponseEntity.ok("Product deleted successfully.");
+    }
+
+    // 🔐 ADMIN or SUPER_ADMIN
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable String id) {
+        ProductResponse response = adminProductService.getProductByIdAsAdmin(id);
+        return ResponseEntity.ok(response);
+    }
+
+    // 🔐 ADMIN or SUPER_ADMIN
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> products = adminProductService.getAllProductsAsAdmin();
+        return ResponseEntity.ok(products);
+    }
+}
