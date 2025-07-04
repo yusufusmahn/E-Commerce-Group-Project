@@ -3,12 +3,15 @@ package org.jumia.utility;
 import org.jumia.data.models.*;
 import org.jumia.dtos.requests.*;
 import org.jumia.dtos.responses.*;
+import org.jumia.security.RoleValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.jumia.security.RoleValidator.getRoleNames;
 
 public class Mapper {
 
@@ -25,13 +28,10 @@ public class Mapper {
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
-
-        Set<String> roleNames = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            roleNames.add(role.name());
-        }
-        response.setRoles(roleNames);
-
+        response.setRoles(getRoleNames(user.getRoles()));
+        response.setStoreName(user.getStoreName());
+        response.setContactInfo(user.getContactInfo());
+        response.setDescription(user.getDescription());
         return response;
     }
 
@@ -59,9 +59,9 @@ public class Mapper {
         response.setName(product.getName());
         response.setDescription(product.getDescription());
         response.setPrice(product.getPrice());
-        response.setQuantityAvailable(product.getQuantityAvailable()); // No errors now
+        response.setQuantityAvailable(product.getQuantityAvailable());
         response.setSellerId(product.getSellerId());
-        response.setImageUrl(product.getImageUrl()); // Map the new image URL field
+        response.setImageUrl(product.getImageUrl());
 
         return response;
     }
@@ -98,7 +98,7 @@ public class Mapper {
         response.setTotalPrice(order.getTotalPrice());
         response.setOrderStatus(order.getStatus());
         response.setProducts(order.getProducts());
-        response.setCreatedAt(order.getCreatedAt().toString()); // Convert LocalDateTime to String
+        response.setCreatedAt(order.getCreatedAt().toString());
         return response;
     }
 
@@ -110,20 +110,20 @@ public class Mapper {
         return response;
     }
 
-    public static Product mapAdminProductRequestToProduct(AdminProductRequest request) {
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        return product;
-    }
-
-    public static Product mapAdminProductRequestToExistingProduct(AdminProductRequest request, Product existingProduct) {
-        existingProduct.setName(request.getName());
-        existingProduct.setDescription(request.getDescription());
-        existingProduct.setPrice(request.getPrice());
-        return existingProduct;
-    }
+//    public static Product mapAdminProductRequestToProduct(AdminProductRequest request) {
+//        Product product = new Product();
+//        product.setName(request.getName());
+//        product.setDescription(request.getDescription());
+//        product.setPrice(request.getPrice());
+//        return product;
+//    }
+//
+//    public static Product mapAdminProductRequestToExistingProduct(AdminProductRequest request, Product existingProduct) {
+//        existingProduct.setName(request.getName());
+//        existingProduct.setDescription(request.getDescription());
+//        existingProduct.setPrice(request.getPrice());
+//        return existingProduct;
+//    }
 
     public static List<ProductResponse> mapProductListToResponseList(List<Product> products) {
         List<ProductResponse> responses = new ArrayList<>();
@@ -143,7 +143,7 @@ public class Mapper {
     public static List<UserResponse> mapUserListToResponseList(List<User> users) {
         List<UserResponse> responses = new ArrayList<>();
         for (User user : users) {
-            responses.add(toResponse(user)); // Reuse existing `toResponse` method
+            responses.add(toResponse(user));
         }
         return responses;
     }
@@ -164,12 +164,15 @@ public class Mapper {
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
+        response.setRoles(getRoleNames(user.getRoles()));
 
-        Set<String> roleNames = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            roleNames.add(role.name());
-        }
-        response.setRoles(roleNames);
+
+
+//        Set<String> roleNames = new HashSet<>();
+//        for (Role role : user.getRoles()) {
+//            roleNames.add(role.name());
+//        }
+//        response.setRoles(roleNames);
 
         return response;
     }
