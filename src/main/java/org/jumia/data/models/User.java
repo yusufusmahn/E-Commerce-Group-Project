@@ -25,6 +25,10 @@ public class User {
     private String contactInfo; // Added contactInfo
     private String description;
     private boolean superAdmin = false; // Add this field
+    private Role previousRole;
+    private String resetToken;
+    private Long resetTokenExpiry;
+
 
 
 }
