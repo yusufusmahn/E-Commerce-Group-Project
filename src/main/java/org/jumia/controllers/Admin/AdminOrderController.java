@@ -1,4 +1,4 @@
-package org.jumia.controllers.admin;
+package org.jumia.controllers.Admin;
 
 import org.jumia.dtos.requests.UpdateOrderRequest;
 import org.jumia.dtos.responses.OrderResponse;
