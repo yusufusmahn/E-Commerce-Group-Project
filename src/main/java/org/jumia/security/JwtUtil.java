@@ -4,9 +4,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.jumia.data.models.Role;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -14,9 +20,20 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${jwt.secret}")
+    private String secret; // Loaded from application.properties
+
+    private Key SECRET_KEY;
+
+//    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder().decode(secret);
+        this.SECRET_KEY = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
+    }
 
     public String extractUsername(String token) {
 
@@ -42,16 +59,33 @@ public class JwtUtil {
     }
 
 
-    public String generateToken(String username, List<String> roles) {
+//    public String generateToken(String username, List<String> roles) {
+//        return Jwts.builder()
+//                .setSubject(username)
+//                .claim("roles", roles)
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+//                .signWith(SECRET_KEY, SignatureAlgorithm.HS512)
+//                .compact();
+//
+//    }
+
+    public String generateToken(String username, List<Role> roles) {
+        // Convert Role objects to their string representations using a for loop
+        List<String> roleNames = new ArrayList<>();
+        for (Role role : roles) {
+            roleNames.add(role.name());
+        }
+
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles)
+                .claim("roles", roleNames) // Storing roles as strings
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS512)
                 .compact();
-
     }
+
 
 
     public boolean validateToken(String token, String username) {
@@ -75,10 +109,27 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public List<String> extractRoles(String token) {
+//    public List<String> extractRoles(String token) {
+//        Claims claims = extractAllClaims(token);
+//        return claims.get("roles", List.class);
+//    }
+
+    public List<Role> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("roles", List.class);
+        List<String> roleStrings = claims.get("roles", List.class);
+
+        List<Role> roles = new ArrayList<>();
+        for (String roleString : roleStrings) {
+            try {
+                roles.add(Role.valueOf(roleString.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid role in token: " + roleString);
+            }
+        }
+        return roles;
     }
+
+
 
 
 
