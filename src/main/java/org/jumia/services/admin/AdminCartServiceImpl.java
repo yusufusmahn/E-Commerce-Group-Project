@@ -1,6 +1,7 @@
 package org.jumia.services.admin;
 
 import org.jumia.data.models.Cart;
+import org.jumia.data.models.CartItem;
 import org.jumia.data.models.Product;
 import org.jumia.data.models.User;
 import org.jumia.data.respositories.CartRepository;
@@ -44,39 +45,44 @@ public class AdminCartServiceImpl implements AdminCartService {
     @Override
     public void clearCartForUser(String userId) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateAdmin(currentUser); // Only ADMIN or SUPER_ADMIN can clear user carts
+        RoleValidator.validateAdmin(currentUser);
 
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user ID: " + userId));
 
-        cart.getProductIds().clear();
+        cart.getItems().clear();
         cart.setTotalAmount(0.0);
         cartRepository.save(cart);
     }
 
+
     @Override
     public void removeProductFromAllCarts(String productId) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateAdmin(currentUser); // Only ADMIN or SUPER_ADMIN can bulk modify carts
+        RoleValidator.validateAdmin(currentUser);
 
         List<Cart> carts = cartRepository.findAll();
         for (Cart cart : carts) {
-            if (cart.getProductIds().contains(productId)) {
-                cart.getProductIds().remove(productId);
+            boolean modified = cart.getItems().removeIf(item ->
+                    item.getProduct() != null && productId.equals(item.getProduct().getId())
+            );
+
+            if (modified) {
                 cart.setTotalAmount(calculateTotalAmount(cart));
                 cartRepository.save(cart);
             }
         }
     }
 
-    // Helper method to calculate total amount
+
     private Double calculateTotalAmount(Cart cart) {
         double total = 0.0;
-        for (String productId : cart.getProductIds()) {
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + productId));
-            total += product.getPrice();
+        for (CartItem item : cart.getItems()) {
+            if (item.getProduct() != null && item.getProduct().getPrice() != null) {
+                total += item.getProduct().getPrice() * item.getQuantity();
+            }
         }
         return total;
     }
+
 }
