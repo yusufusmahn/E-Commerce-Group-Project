@@ -1,5 +1,8 @@
 package org.jumia.services.admin;
 
+import org.jumia.data.models.Product;
+import org.jumia.data.respositories.ProductRepository;
+import org.jumia.dtos.responses.OrderedProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.jumia.data.models.Order;
@@ -21,7 +24,11 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private CurrentUserProvider currentUserProvider;
+
 
     @Override
     public OrderResponse updateOrderAsAdmin(String id, UpdateOrderRequest request) {
@@ -31,10 +38,15 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
 
-        Order updatedOrder = Mapper.mapUpdateOrderRequestToOrder(request, existingOrder);
+        List<Product> productList = productRepository.findAll();
+
+        Order updatedOrder = Mapper.mapUpdateOrderRequestToOrder(request, existingOrder, productList);
         Order savedOrder = orderRepository.save(updatedOrder);
-        return Mapper.mapOrderToOrderResponse(savedOrder);
+
+        List<OrderedProductResponse> productDetails = Mapper.buildOrderedProductResponses(savedOrder.getProducts());
+        return Mapper.mapOrderToOrderResponse(savedOrder, productDetails);
     }
+
 
     @Override
     public void cancelOrderAsAdmin(String id) {
