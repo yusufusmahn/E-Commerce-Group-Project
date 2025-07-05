@@ -94,6 +94,14 @@ public class RoleValidator {
         return roleNames;
     }
 
+    public static void validateSelf(User user) {
+        if (user == null) {
+            throw new SecurityException("Unauthorized: no user authenticated.");
+        }
+    }
+
+
+
     public static Set<Role> convertStringsToRoles(Set<String> roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
