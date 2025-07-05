@@ -1,10 +1,10 @@
-package org.temu.data.models;
+package org.jumia.data.models;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -14,9 +14,12 @@ public class Order {
     @Id
     private String id;
     private String userId;
+    private String sellerId;     // Add this field for seller-specific orders
     private Double totalPrice;
-    private String orderStatus;
-    private List<String> products;
-    private String createdAt;
+    private OrderStatus status;
+    private List<OrderedProduct> products;
+
+    private LocalDateTime createdAt;
+
 
 }
