@@ -31,7 +31,7 @@ public class AdminCartServiceImpl implements AdminCartService {
     @Override
     public List<CartResponse> getAllCarts() {
         User currentUser = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateAdmin(currentUser); // Ensures only ADMIN or SUPER_ADMIN can proceed
+        RoleValidator.validateAdmin(currentUser);
 
         List<Cart> carts = cartRepository.findAll();
         List<CartResponse> responses = new ArrayList<>();
