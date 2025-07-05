@@ -1,8 +1,7 @@
 package org.jumia.controllers.Admin;
 
-import org.jumia.dtos.requests.CreateProductRequest;
-import org.jumia.dtos.requests.UpdateProductRequest;
-import org.jumia.dtos.responses.ProductResponse;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.admin.AdminProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
