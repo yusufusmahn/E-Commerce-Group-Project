@@ -30,7 +30,7 @@ public class CustomerUserServiceImpl implements CustomerUserService {
     @Override
     public UserResponse getCustomerProfile(String customerId) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateOwnershipOrAdmin(currentUser, customerId);
+        RoleValidator.validateCustomer(currentUser);
 
         User customer = userRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + customerId));
@@ -40,7 +40,7 @@ public class CustomerUserServiceImpl implements CustomerUserService {
     @Override
     public CustomerAnalyticsResponse getPurchaseAnalytics(String customerId) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateOwnershipOrAdmin(currentUser, customerId);
+        RoleValidator.validateCustomer(currentUser);
 
         List<Order> orders = orderRepository.findByUserId(customerId);
 

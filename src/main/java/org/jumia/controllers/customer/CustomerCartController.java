@@ -1,5 +1,6 @@
 package org.jumia.controllers.customer;
 
+import jakarta.validation.Valid;
 import org.jumia.dtos.requests.AddToCartRequest;
 import org.jumia.dtos.requests.UpdateCartRequest;
 import org.jumia.dtos.responses.CartResponse;
@@ -20,12 +21,12 @@ public class CustomerCartController {
     }
 
     @PostMapping("/add")
-    public CartResponse addToCart(@RequestBody AddToCartRequest request) {
+    public CartResponse addToCart(@RequestBody @Valid AddToCartRequest request) {
         return cartService.addToCartForCurrentUser(request);
     }
 
     @PutMapping("/update")
-    public CartResponse updateCart(@RequestBody UpdateCartRequest request) {
+    public CartResponse updateCart(@RequestBody @Valid UpdateCartRequest request) {
         return cartService.updateCartForCurrentUser(request);
     }
 
