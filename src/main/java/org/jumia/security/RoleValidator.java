@@ -50,13 +50,6 @@ public class RoleValidator {
     }
 
 
-
-
-
-//    public static boolean hasRole(User user, Role role) {
-//        return user.getRoles() != null && user.getRoles().contains(role);
-//    }
-
     public static void addRole(User user, Role role) {
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
@@ -114,14 +107,6 @@ public class RoleValidator {
         return roles;
     }
 
-
-
-//    public static void validateSuperAdmin(User user) {
-//        if (!isSuperAdmin(user)) {
-//            throw new SecurityException("Unauthorized: Super Admin privileges required.");
-//        }
-//    }
-
     public static boolean validateUserAccess(User currentUser, String targetUserId) {
         return isSuperAdmin(currentUser) || isAdmin(currentUser) || currentUser.getId().equals(targetUserId);
     }
@@ -133,6 +118,38 @@ public class RoleValidator {
     public static boolean isNotSeller(User user) {
         return !isSeller(user);
     }
+    public static void validateSuperAdmin(User user) {
+        validateRole(user, Role.SUPER_ADMIN);
+    }
+
+    public static void validateCustomer(User user) {
+        validateRole(user, Role.CUSTOMER);
+    }
+
+//    public static void validateAnyRole(User user, Role... roles) {
+//        for (Role role : roles) {
+//            if (hasRole(user, role)) return;
+//        }
+//        throw new SecurityException("Unauthorized: Requires one of the roles " + Arrays.toString(roles));
+//    }
+
+
+
+
+
+//    public static boolean hasRole(User user, Role role) {
+//        return user.getRoles() != null && user.getRoles().contains(role);
+//    }
+
+
+
+//    public static void validateSuperAdmin(User user) {
+//        if (!isSuperAdmin(user)) {
+//            throw new SecurityException("Unauthorized: Super Admin privileges required.");
+//        }
+//    }
+
+
 
 //    public static void validateRole(User user, Role requiredRole) {
 //        if (!hasRole(user, requiredRole)) {
@@ -154,12 +171,7 @@ public class RoleValidator {
 //        }
 //    }
 
-    public static void validateAnyRole(User user, Role... roles) {
-        for (Role role : roles) {
-            if (hasRole(user, role)) return;
-        }
-        throw new SecurityException("Unauthorized: Requires one of the roles " + Arrays.toString(roles));
-    }
+
 
 
 //
@@ -172,9 +184,7 @@ public class RoleValidator {
 //    }
 
 
-    public static void validateSuperAdmin(User user) {
-        validateRole(user, Role.SUPER_ADMIN);
-    }
+
 //
 
 
