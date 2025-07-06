@@ -1,4 +1,3 @@
-// Updated RoleValidator
 package org.jumia.security;
 
 import org.jumia.data.models.Role;
