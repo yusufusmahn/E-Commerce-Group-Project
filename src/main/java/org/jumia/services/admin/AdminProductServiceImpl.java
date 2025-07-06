@@ -102,7 +102,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Override
     public void deleteProductAsAdmin(String id) {
         User user = currentUserProvider.getAuthenticatedUser();
-        RoleValidator.validateSuperAdmin(user); // 🔒 DELETE = super admin only
+        RoleValidator.validateSuperAdmin(user);
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
