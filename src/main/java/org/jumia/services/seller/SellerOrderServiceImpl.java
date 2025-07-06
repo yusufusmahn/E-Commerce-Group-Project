@@ -1,10 +1,9 @@
 package org.jumia.services.seller;
 
-import org.jumia.data.models.OrderStatus;
+import org.jumia.data.models.*;
+import org.jumia.dtos.responses.OrderedProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.jumia.data.models.Order;
-import org.jumia.data.models.User;
 import org.jumia.data.respositories.OrderRepository;
 import org.jumia.dtos.requests.UpdateOrderRequest;
 import org.jumia.dtos.responses.OrderResponse;
@@ -14,6 +13,7 @@ import org.jumia.security.CurrentUserProvider;
 import org.jumia.security.RoleValidator;
 import org.jumia.utility.Mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,10 +46,14 @@ public class SellerOrderServiceImpl implements SellerOrderService {
             throw new AccessDeniedException("You can only update your own orders.");
         }
 
-        Order updatedOrder = Mapper.mapUpdateOrderRequestToOrder(request, existingOrder);
+        List<Product> products = extractProductsFromOrder(existingOrder); // extract embedded product snapshot info
+        Order updatedOrder = Mapper.mapUpdateOrderRequestToOrder(request, existingOrder, products);
         Order savedOrder = orderRepository.save(updatedOrder);
-        return Mapper.mapOrderToOrderResponse(savedOrder);
+
+        List<OrderedProductResponse> productDetails = Mapper.buildOrderedProductResponses(savedOrder.getProducts());
+        return Mapper.mapOrderToOrderResponse(savedOrder, productDetails);
     }
+
 
     @Override
     public void cancelOrderBySeller(String orderId) {
@@ -82,5 +86,14 @@ public class SellerOrderServiceImpl implements SellerOrderService {
         List<Order> orders = orderRepository.findBySellerIdAndStatus(seller.getId(), orderStatus);
         return Mapper.mapOrderListToResponseList(orders);
     }
+
+    private List<Product> extractProductsFromOrder(Order order) {
+        List<Product> products = new ArrayList<>();
+        for (OrderedProduct op : order.getProducts()) {
+            products.add(op.getProduct());
+        }
+        return products;
+    }
+
 
 }
