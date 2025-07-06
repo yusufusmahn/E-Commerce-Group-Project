@@ -24,7 +24,7 @@ public class LogoutServiceImpl implements LogoutService {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            logger.warn("❌ Missing or invalid Authorization header during logout");
+            logger.warn("Missing or invalid Authorization header during logout");
             throw new IllegalArgumentException("Authorization token is missing or invalid.");
         }
 
