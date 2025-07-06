@@ -17,7 +17,7 @@ public class Product {
     private Double price;
     private Integer quantityAvailable;
     private String sellerId;
-    private String imageUrl; // New field for the image URL
+    private String imageUrl;
 
 
 
