@@ -16,15 +16,13 @@ public class User {
     private String name;
     private String email;
     private String password;
-//    private String role;
-//    private Set<Role> roles; // Add roles
     private Set<Role> roles = new HashSet<>();
-    private String storeName; // Optional
+    private String storeName;
 
 
-    private String contactInfo; // Added contactInfo
+    private String contactInfo;
     private String description;
-    private boolean superAdmin = false; // Add this field
+    private boolean superAdmin = false;
     private Role previousRole;
     private String resetToken;
     private Long resetTokenExpiry;
