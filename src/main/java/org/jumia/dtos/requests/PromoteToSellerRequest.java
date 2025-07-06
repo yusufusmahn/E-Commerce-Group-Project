@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PromoteToSellerRequest {
-    private String email; // Target user's email
+    private String email;
     private String storeName;
 }
