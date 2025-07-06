@@ -12,11 +12,10 @@ public class UserResponse {
     private String id;
     private String name;
     private String email;
-//    private Set<String> roles;
     private List<String> roles;
     private String storeName;
     private String contactInfo;
-    private String description;// Add this field
+    private String description;
 
 
 }
