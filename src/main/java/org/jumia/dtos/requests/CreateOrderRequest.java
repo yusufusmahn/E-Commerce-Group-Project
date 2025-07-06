@@ -13,7 +13,7 @@ public class CreateOrderRequest {
     @Positive(message = "Total price must be greater than zero.")
     private Double totalPrice;
 
-    private String orderStatus; // Optional, fallback to PENDING
+    private String orderStatus;
 
     @NotEmpty(message = "Products list must not be empty.")
     private List<OrderedProductDTO> products;

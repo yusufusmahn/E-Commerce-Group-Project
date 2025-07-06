@@ -13,10 +13,10 @@ public class UserRoleAuditLog {
     @Id
     private String id;
 
-    private String performedByEmail;   // Who made the change
-    private String targetUserEmail;    // Who was modified
-    private String action;             // e.g., "PROMOTE_TO_ADMIN", "REVOKE_SELLER"
-    private String previousRole;       // e.g., "CUSTOMER"
-    private String newRole;            // e.g., "SELLER"
+    private String performedByEmail;
+    private String targetUserEmail;
+    private String action;
+    private String previousRole;
+    private String newRole;
     private LocalDateTime timestamp = LocalDateTime.now();
 }
