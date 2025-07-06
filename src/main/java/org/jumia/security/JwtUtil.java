@@ -3,7 +3,6 @@ package org.jumia.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.jumia.data.models.Role;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +20,10 @@ import java.util.function.Function;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String secret; // Loaded from application.properties
+    private String secret;
 
     private Key SECRET_KEY;
 
-//    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
 
@@ -71,7 +69,6 @@ public class JwtUtil {
 //    }
 
     public String generateToken(String username, List<Role> roles) {
-        // Convert Role objects to their string representations using a for loop
         List<String> roleNames = new ArrayList<>();
         for (Role role : roles) {
             roleNames.add(role.name());
@@ -79,7 +76,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roleNames) // Storing roles as strings
+                .claim("roles", roleNames)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS512)
