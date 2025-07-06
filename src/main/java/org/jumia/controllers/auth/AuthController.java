@@ -34,7 +34,6 @@ public class AuthController {
         return ResponseEntity.ok("Password reset successful.");
     }
 
-    // src/main/java/org/jumia/controllers/auth/AuthController.java
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         logoutService.logout(request);
