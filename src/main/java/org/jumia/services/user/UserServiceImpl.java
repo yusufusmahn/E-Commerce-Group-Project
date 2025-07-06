@@ -1,19 +1,14 @@
 package org.jumia.services.user;
 
-import org.jumia.dtos.requests.UpdateProfileRequest;
+import org.jumia.dtos.requests.*;
 import org.jumia.security.CurrentUserProvider;
 import org.jumia.services.email.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.jumia.data.models.*;
-import org.jumia.data.respositories.UserRepository;
-import org.jumia.dtos.requests.LoginUserRequest;
-import org.jumia.dtos.requests.RegisterUserRequest;
-import org.jumia.dtos.responses.TokenDTO;
-import org.jumia.dtos.responses.UserResponse;
-import org.jumia.exceptions.InvalidPasswordException;
+import org.jumia.data.respositories.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.exceptions.*;
 import org.jumia.security.RoleValidator;
 import org.jumia.security.JwtUtil;
@@ -202,19 +197,16 @@ public class UserServiceImpl implements UserService {
 
 @Override
 public UserResponse registerUser(RegisterUserRequest request) {
-    // Ensure email is not already registered
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
         throw new UserAlreadyExistsException("Email already in use.");
     }
 
-    // Convert request to User without touching roles
     User user = Mapper.toEntity(request);
 
     user.setContactInfo(request.getContactInfo());
     user.setDescription(request.getDescription());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-    // Role assignment logic — secure and controlled
     Set<Role> assignedRoles;
 
     if (request.isSeller()) {
@@ -233,7 +225,6 @@ public UserResponse registerUser(RegisterUserRequest request) {
 
     user.setRoles(assignedRoles);
 
-    // Save and notify
     User savedUser = userRepository.save(user);
     sendWelcomeEmail(savedUser);
 
