@@ -19,7 +19,6 @@ public class AdminUserController {
     @Autowired
     private AdminUserService adminUserService;
 
-    // User Management Endpoints
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> users = adminUserService.getAllUsers();
