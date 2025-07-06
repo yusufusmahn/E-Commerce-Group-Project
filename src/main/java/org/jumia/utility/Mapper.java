@@ -3,13 +3,9 @@ package org.jumia.utility;
 import org.jumia.data.models.*;
 import org.jumia.dtos.requests.*;
 import org.jumia.dtos.responses.*;
-import org.jumia.security.RoleValidator;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.jumia.security.RoleValidator.getRoleNames;
 
