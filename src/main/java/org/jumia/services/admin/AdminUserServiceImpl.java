@@ -73,7 +73,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 //    }
 
     //
-    // ✅ Delete multiple users
+
     @Override
     public void deleteUsers(DeleteUsersRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
@@ -126,7 +126,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         return Mapper.mapUserListToResponseList(users);
     }
 
-    // ✅ Get user by ID (email)
     @Override
     public UserResponse getUserById(String email) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
@@ -137,7 +136,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         return Mapper.toResponse(user);
     }
 
-    // ✅ Delete a single user
     @Override
     public void deleteUserById(String email) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
