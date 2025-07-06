@@ -23,8 +23,7 @@ public class CartCleanupScheduler {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    // 🔁 1. Expire and delete stale carts (older than 30 days)
-    @Scheduled(cron = "0 0 2 * * *") // Runs daily at 2 AM
+    @Scheduled(cron = "0 0 2 * * *")
     public void deleteStaleCarts() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(30);
         List<Cart> staleCarts = cartRepository.findByLastUpdatedBefore(cutoff);
@@ -44,8 +43,7 @@ public class CartCleanupScheduler {
         }
     }
 
-    // 🔍 2. Remove invalid cart items (null items or items with null product)
-    @Scheduled(cron = "0 30 2 * * *") // Runs daily at 2:30 AM
+    @Scheduled(cron = "0 30 2 * * *")
     public void cleanInvalidCartItems() {
         List<Cart> allCarts = cartRepository.findAll();
         for (Cart cart : allCarts) {
