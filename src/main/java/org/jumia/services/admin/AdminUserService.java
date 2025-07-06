@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface AdminUserService {
 
-    // User management
     List<UserResponse> getAllUsers();
 
     UserResponse getUserById(String id);
