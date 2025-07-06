@@ -1,17 +1,10 @@
 package org.jumia.services.customer;
 
-import org.jumia.data.models.Cart;
-import org.jumia.data.models.CartItem;
-import org.jumia.data.models.Product;
-import org.jumia.data.models.User;
-import org.jumia.data.respositories.CartItemRepository;
-import org.jumia.data.respositories.CartRepository;
-import org.jumia.data.respositories.ProductRepository;
-import org.jumia.dtos.requests.AddToCartRequest;
-import org.jumia.dtos.requests.CartItemUpdateRequest;
-import org.jumia.dtos.requests.UpdateCartRequest;
-import org.jumia.dtos.responses.CartResponse;
-import org.jumia.exceptions.ResourceNotFoundException;
+import org.jumia.data.models.*;
+import org.jumia.data.respositories.*;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
+import org.jumia.exceptions.*;
 import org.jumia.security.CurrentUserProvider;
 import org.jumia.security.RoleValidator;
 import org.jumia.utility.Mapper;
@@ -56,7 +49,6 @@ public class CustomerCartServiceImpl implements CustomerCartService {
         Cart cart = cartRepository.findByUserId(user.getId()).orElse(new Cart());
         cart.setUserId(user.getId());
 
-        // ✅ Fix 1: Ensure the cart's item list is never null
         if (cart.getItems() == null) {
             cart.setItems(new ArrayList<>());
         }
@@ -69,7 +61,6 @@ public class CustomerCartServiceImpl implements CustomerCartService {
 
         CartItem existingItem = null;
 
-        // ✅ Fix 2: Prevent NullPointerException while looping
         for (CartItem item : cart.getItems()) {
             if (item == null || item.getProduct() == null) continue;
 
@@ -89,7 +80,7 @@ public class CustomerCartServiceImpl implements CustomerCartService {
             newItem.setQuantity(request.getQuantity());
             newItem.setTotalPrice(product.getPrice() * request.getQuantity());
 
-            cartItemRepository.save(newItem); // manually save since there's no cascade
+            cartItemRepository.save(newItem);
             cart.getItems().add(newItem);
         }
 
@@ -108,12 +99,10 @@ public class CustomerCartServiceImpl implements CustomerCartService {
         Cart cart = cartRepository.findByUserId(user.getId()).orElse(new Cart());
         cart.setUserId(user.getId());
 
-        // ✅ Make sure item list is not null
         if (cart.getItems() == null) {
             cart.setItems(new ArrayList<>());
         }
 
-        // ✅ Delete old items safely
         for (CartItem oldItem : cart.getItems()) {
             if (oldItem != null && oldItem.getId() != null) {
                 cartItemRepository.deleteById(oldItem.getId());
@@ -121,7 +110,6 @@ public class CustomerCartServiceImpl implements CustomerCartService {
         }
         cart.getItems().clear();
 
-        // ✅ Add new items
         List<CartItemUpdateRequest> items = request.getItems();
         for (CartItemUpdateRequest itemRequest : items) {
             Product product = productRepository.findById(itemRequest.getProductId())
@@ -132,7 +120,7 @@ public class CustomerCartServiceImpl implements CustomerCartService {
             item.setQuantity(itemRequest.getQuantity());
             item.setTotalPrice(product.getPrice() * itemRequest.getQuantity());
 
-            cartItemRepository.save(item); // manually save since there's no cascade
+            cartItemRepository.save(item);
             cart.getItems().add(item);
         }
 
