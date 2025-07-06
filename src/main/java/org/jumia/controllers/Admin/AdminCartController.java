@@ -1,4 +1,4 @@
-package org.jumia.controllers.admin;
+package org.jumia.controllers.Admin;
 
 import org.jumia.dtos.responses.CartResponse;
 import org.jumia.services.admin.AdminCartService;
