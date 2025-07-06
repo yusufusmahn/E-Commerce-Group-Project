@@ -1,4 +1,3 @@
-// src/main/java/org/jumia/security/TokenBlacklist.java
 package org.jumia.security;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ public class TokenBlacklist {
     public boolean isTokenBlacklisted(String token) {
         if (!blacklist.containsKey(token)) return false;
 
-        // Auto-remove expired entries
         long expiryTime = blacklist.get(token);
         if (expiryTime < System.currentTimeMillis()) {
             blacklist.remove(token);
