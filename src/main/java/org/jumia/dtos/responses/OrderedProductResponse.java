@@ -7,7 +7,7 @@ public class OrderedProductResponse {
     private String productId;
     private int quantity;
 
-    private String name; // snapshot
-    private double price; // snapshot
-    private String imageUrl; // snapshot
+    private String name;
+    private double price;
+    private String imageUrl;
 }
