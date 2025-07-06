@@ -35,7 +35,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSelf(currentUser);
 
-        // Fetch full product details for snapshotting
         List<Product> fullProducts = new ArrayList<>();
         for (OrderedProductDTO dto : request.getProducts()) {
             Product product = productRepository.findById(dto.getProductId())
