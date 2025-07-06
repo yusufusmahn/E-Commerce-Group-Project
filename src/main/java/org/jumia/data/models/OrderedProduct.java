@@ -7,11 +7,10 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 public class OrderedProduct {
 
     @DBRef
-    private Product product; // optional, for future reference
+    private Product product;
 
     private int quantity;
 
-    // Snapshot fields
     private String nameAtPurchase;
     private double priceAtPurchase;
     private String imageUrlAtPurchase;
