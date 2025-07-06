@@ -8,8 +8,8 @@ public class ProductResponse {
     private String name;
     private String description;
     private double price;
-    private String sellerId; // Add sellerId to track ownership
-    private Integer quantityAvailable; // Add this field to match Product
-    private String imageUrl; // Add this field for the image URL
+    private String sellerId;
+    private Integer quantityAvailable;
+    private String imageUrl;
 
 }
