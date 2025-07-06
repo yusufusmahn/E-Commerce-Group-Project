@@ -12,7 +12,7 @@ public class UpdateOrderRequest {
     @Positive(message = "Total price must be greater than zero.")
     private Double totalPrice;
 
-    private String orderStatus; // ✅ Changed from String
+    private String orderStatus;
 
-    private List<OrderedProductDTO> products; // ✅ updated type
+    private List<OrderedProductDTO> products;
 }
