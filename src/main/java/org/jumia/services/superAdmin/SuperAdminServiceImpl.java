@@ -262,7 +262,7 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
 
         Role previousRole = targetUser.getPreviousRole();
         if (previousRole == null || previousRole == Role.ADMIN) {
-            System.out.println("⚠️ Previous role invalid or missing. Defaulting to CUSTOMER.");
+            System.out.println("Previous role invalid or missing. Defaulting to CUSTOMER.");
             previousRole = Role.CUSTOMER;
         }
 
@@ -322,13 +322,13 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
 
         Role previousRole = targetUser.getPreviousRole();
         if (previousRole == null || previousRole == Role.SELLER) {
-            System.out.println("⚠️ Previous role invalid or missing. Defaulting to CUSTOMER.");
+            System.out.println("Previous role invalid or missing. Defaulting to CUSTOMER.");
             previousRole = Role.CUSTOMER;
         }
 
         targetUser.setRoles(Set.of(previousRole));
         targetUser.setPreviousRole(null);
-        targetUser.setStoreName(null); // Remove seller store name
+        targetUser.setStoreName(null);
 
         userRepository.save(targetUser);
         return Mapper.toResponse(targetUser);
