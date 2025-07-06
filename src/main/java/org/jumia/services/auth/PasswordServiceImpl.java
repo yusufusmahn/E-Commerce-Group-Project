@@ -1,18 +1,14 @@
 package org.jumia.services.auth;
 
-import org.jumia.data.models.User;
-import org.jumia.data.respositories.UserRepository;
-import org.jumia.dtos.requests.ForgotPasswordRequest;
-import org.jumia.dtos.requests.ResetPasswordRequest;
-import org.jumia.exceptions.ResourceNotFoundException;
-import org.jumia.exceptions.TokenExpiredException;
+import org.jumia.data.models.*;
+import org.jumia.data.respositories.*;
+import org.jumia.dtos.requests.*;
+import org.jumia.exceptions.*;
 import org.jumia.security.JwtUtil;
 import org.jumia.services.email.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,18 +31,14 @@ public class PasswordServiceImpl implements PasswordService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
 
-        // 1. Generate signed JWT reset token (short-lived, no roles needed)
         String resetToken = jwtUtil.generateToken(user.getEmail(), List.of());
 
-        // 2. Store token and expiry (optional but extra safety)
         user.setResetToken(resetToken);
         user.setResetTokenExpiry(System.currentTimeMillis() + jwtUtil.getExpirationTime());
         userRepository.save(user);
 
-        // 3. Build reset link
         String resetLink = "http://localhost:3000/reset-password?token=" + resetToken;
 
-        // 4. HTML Email Body
         String htmlBody = "<p>Hello <strong>" + user.getName() + "</strong>,</p>"
                 + "<p>You recently requested to reset your password. Click the button below to proceed:</p>"
                 + "<a href=\"" + resetLink + "\" "
@@ -56,7 +48,6 @@ public class PasswordServiceImpl implements PasswordService {
                 + "<p>If you didn’t request this, you can safely ignore this email.</p>"
                 + "<p><strong>Jumia Security Team</strong></p>";
 
-        // 5. Send email
         emailSender.send(user.getEmail(), "🔐 Reset Your Password", htmlBody, true);
     }
 
@@ -67,7 +58,6 @@ public class PasswordServiceImpl implements PasswordService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid or expired token."));
 
-        // Validate token
         if (!request.getToken().equals(user.getResetToken())) {
             throw new TokenExpiredException("Invalid reset token.");
         }
@@ -76,7 +66,6 @@ public class PasswordServiceImpl implements PasswordService {
             throw new TokenExpiredException("Reset token has expired.");
         }
 
-        // Update password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.setResetToken(null);
         user.setResetTokenExpiry(0L);
