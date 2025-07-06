@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.jumia.dtos.requests.UpdateProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.jumia.dtos.requests.LoginUserRequest;
 import org.jumia.dtos.requests.RegisterUserRequest;
