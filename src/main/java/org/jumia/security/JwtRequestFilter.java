@@ -71,19 +71,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 //                for (String role : roles) {
 
-    /// /                    authorities.add(new SimpleGrantedAuthority(role));
-//                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-//                }
-//
-//                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-//                        username, null, authorities));
-//            }
-//        }
-//
-//        chain.doFilter(request, response);
-//    }
-//
-//}
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -105,9 +93,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtUtil.validateToken(jwt, username)) {
-                List<Role> roles = jwtUtil.extractRoles(jwt); // Extracting List<Role>
+                List<Role> roles = jwtUtil.extractRoles(jwt);
 
-                // Convert roles to SimpleGrantedAuthority
+
                 List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 for (Role role : roles) {
                     authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
