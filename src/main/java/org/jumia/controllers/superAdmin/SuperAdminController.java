@@ -22,8 +22,6 @@ public class SuperAdminController {
     @Autowired
     private SuperAdminService superAdminService;
 
-    @Autowired
-    private CurrentUserProvider currentUserProvider;
 
 //    @PostMapping("/promote-to-admin")
 //    public ResponseEntity<UserResponse> promoteToAdmin(@RequestBody PromoteToAdminRequest request) {
