@@ -13,13 +13,11 @@ public class CustomerUserController {
     @Autowired
     private CustomerUserService customerUserService;
 
-    // ✅ Get the customer profile
     @GetMapping("/{customerId}")
     public UserResponse getCustomerProfile(@PathVariable String customerId) {
         return customerUserService.getCustomerProfile(customerId);
     }
 
-    // ✅ Get purchase analytics
     @GetMapping("/{customerId}/analytics")
     public CustomerAnalyticsResponse getPurchaseAnalytics(@PathVariable String customerId) {
         return customerUserService.getPurchaseAnalytics(customerId);

@@ -14,7 +14,7 @@ public class Order {
     @Id
     private String id;
     private String userId;
-    private String sellerId;     // Add this field for seller-specific orders
+    private String sellerId;
     private Double totalPrice;
     private OrderStatus status;
     private List<OrderedProduct> products;
