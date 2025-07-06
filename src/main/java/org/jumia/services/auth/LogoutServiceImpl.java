@@ -34,6 +34,6 @@ public class LogoutServiceImpl implements LogoutService {
 
         tokenBlacklist.blacklistToken(token, expiry);
 
-        logger.info("✅ User '{}' has logged out successfully. Token blacklisted.", username);
+        logger.info("User '{}' has logged out successfully. Token blacklisted.", username);
     }
 }
