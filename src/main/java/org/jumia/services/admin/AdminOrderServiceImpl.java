@@ -86,7 +86,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         orderRepository.delete(order);
     }
 
-    // Optional: remove this if you're validating through RoleValidator instead
     @Override
     public void validateAdminRole(org.springframework.security.core.Authentication authentication) {
         throw new UnsupportedOperationException("Use CurrentUserProvider + RoleValidator instead");
