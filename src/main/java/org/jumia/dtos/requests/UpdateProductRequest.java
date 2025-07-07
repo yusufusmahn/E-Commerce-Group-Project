@@ -17,4 +17,7 @@ public class UpdateProductRequest {
     private Double price;
 
     private int quantityAvailable;
+
+    private String categoryId; // Optional
+
 }
