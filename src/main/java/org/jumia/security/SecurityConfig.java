@@ -39,8 +39,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
-                                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                                .requestMatchers("/api/users/register", "/api/users/login", "/api/shop/**").permitAll()
+                                .requestMatchers("/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
                                 .requestMatchers("/api/users/**").authenticated()
+                                .requestMatchers("/api/auth/logout").authenticated()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                                .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
                                 .requestMatchers("/api/seller/**").hasRole("SELLER")
