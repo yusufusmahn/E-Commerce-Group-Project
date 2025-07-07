@@ -48,7 +48,7 @@ public class PasswordServiceImpl implements PasswordService {
                 + "<p>If you didn’t request this, you can safely ignore this email.</p>"
                 + "<p><strong>Jumia Security Team</strong></p>";
 
-        emailSender.send(user.getEmail(), "🔐 Reset Your Password", htmlBody, true);
+        emailSender.send(user.getEmail(), "Reset Your Password", htmlBody, true);
     }
 
     @Override
