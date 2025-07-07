@@ -18,5 +18,8 @@ public class CreateProductRequest {
 
     private int quantityAvailable;
 
+    @NotBlank(message = "Category ID is required.")
+    private String categoryId; // New
+
 
 }
