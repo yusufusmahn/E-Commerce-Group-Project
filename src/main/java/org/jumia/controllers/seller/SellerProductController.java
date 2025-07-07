@@ -238,4 +238,14 @@ public class SellerProductController {
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return ResponseEntity.ok(sellerProductService.getAllProducts());
     }
+
+    @GetMapping("/by-category")
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@RequestParam String categoryId) {
+        return ResponseEntity.ok(sellerProductService.getProductsByCategory(categoryId));
+    }
+
+    @GetMapping("/my-products")
+    public List<ProductResponse> getMyProducts(@RequestParam(required = false) String categoryIdOrName) {
+        return sellerProductService.getMyProducts(categoryIdOrName);
+    }
 }
