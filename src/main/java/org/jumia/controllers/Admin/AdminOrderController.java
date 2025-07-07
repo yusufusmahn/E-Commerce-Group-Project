@@ -46,4 +46,5 @@ public class AdminOrderController {
         adminOrderService.cancelOrderAsAdmin(id);
         return ResponseEntity.ok("Order canceled successfully.");
     }
+
 }
