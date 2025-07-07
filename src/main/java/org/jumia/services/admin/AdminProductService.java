@@ -15,5 +15,6 @@ public interface AdminProductService {
     List<ProductResponse> getAllProductsAsAdmin();
     ProductResponse addProductAsAdmin(CreateProductRequest request, MultipartFile image);
     ProductResponse updateProductAsAdmin(String productId, UpdateProductRequest request, MultipartFile image);
+//    List<ProductResponse> getProductsByCategory(String categoryId);
 
 }
