@@ -12,4 +12,8 @@ public class ProductResponse {
     private Integer quantityAvailable;
     private String imageUrl;
 
+
+    private String categoryId;    // New
+    private String categoryName;
+
 }
