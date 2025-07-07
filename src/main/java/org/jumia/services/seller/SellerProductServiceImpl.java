@@ -17,23 +17,6 @@ import java.io.IOException;
 import java.util.List;
 
 
-
-//import org.jumia.services.CloudinaryService.CloudinaryService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.jumia.data.models.*;
-//import org.jumia.data.respositories.*;
-//import org.jumia.dtos.requests.*;
-//import org.jumia.dtos.responses.*;
-//import org.jumia.exceptions.*;
-//import org.jumia.security.CurrentUserProvider;
-//import org.jumia.security.RoleValidator;
-//import org.jumia.utility.Mapper;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.io.IOException;
-//import java.util.List;
-
 @Service
 public class SellerProductServiceImpl implements SellerProductService {
 
