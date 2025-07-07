@@ -9,4 +9,5 @@ public interface CustomerProductService {
     List<ProductResponse> getAllProducts();
     ProductResponse getProductById(String productId);
     List<ProductResponse> searchProducts(ProductSearchRequest request);
+
 }
