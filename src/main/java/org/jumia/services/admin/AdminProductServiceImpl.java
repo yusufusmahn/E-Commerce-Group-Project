@@ -1,6 +1,8 @@
 package org.jumia.services.admin;
 
+import org.jumia.data.models.Category;
 import org.jumia.data.models.User;
+import org.jumia.data.respositories.CategoryRepository;
 import org.jumia.security.CurrentUserProvider;
 import org.jumia.security.RoleValidator;
 import org.jumia.services.CloudinaryService.CloudinaryService;
@@ -30,6 +32,10 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+
     @Override
     public ProductResponse addProductAsAdmin(CreateProductRequest request, MultipartFile image) {
         User user = currentUserProvider.getAuthenticatedUser();
@@ -44,8 +50,16 @@ public class AdminProductServiceImpl implements AdminProductService {
             }
         }
 
-        Product product = Mapper.mapCreateProductRequestToProduct(request);
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+
+        Product product = Mapper.mapCreateProductRequestToProduct(request, category);
         product.setImageUrl(imageUrl);
+
+        // Optional: mark product added by admin
+        product.setSellerId(currentUserProvider.getAuthenticatedUser().getId());
+
         Product savedProduct = productRepository.save(product);
         return Mapper.mapProductToProductResponse(savedProduct);
     }
@@ -67,12 +81,23 @@ public class AdminProductServiceImpl implements AdminProductService {
             }
         }
 
-        Product updated = Mapper.mapUpdateProductRequestToProduct(request, existing);
+        Category category = null;
+        if (request.getCategoryId() != null) {
+            category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+        }
+
+        Product updated = Mapper.mapUpdateProductRequestToProduct(request, existing, category);
         updated.setImageUrl(imageUrl);
         Product saved = productRepository.save(updated);
         return Mapper.mapProductToProductResponse(saved);
     }
 
+//    @Override
+//    public List<ProductResponse> getProductsByCategory(String categoryId) {
+//        List<Product> products = productRepository.findByCategoryId(categoryId);
+//        return Mapper.mapProductListToResponseList(products);
+//    }
 
 
 
