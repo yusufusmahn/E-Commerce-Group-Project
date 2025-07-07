@@ -33,6 +33,7 @@ public class AdminOrderController {
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> orders = adminOrderService.getAllOrders();
         return ResponseEntity.ok(orders);
+
     }
 
     @GetMapping("/user/{userId}")
