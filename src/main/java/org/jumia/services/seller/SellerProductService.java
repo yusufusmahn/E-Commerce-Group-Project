@@ -42,4 +42,9 @@ public interface SellerProductService {
     ProductResponse updateStock(UpdateStockRequest request);
 
     List<ProductResponse> getAllProducts();
+
+    List<ProductResponse> getProductsByCategory(String categoryId);
+
+    List<ProductResponse> getMyProducts(String categoryIdOrName);
+
 }
