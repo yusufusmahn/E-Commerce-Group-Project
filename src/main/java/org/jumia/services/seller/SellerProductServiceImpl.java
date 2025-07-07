@@ -29,6 +29,10 @@ public class SellerProductServiceImpl implements SellerProductService {
     @Autowired
     private CurrentUserProvider currentUserProvider;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+
     @Override
     public ProductResponse addProduct(CreateProductRequest request, MultipartFile image) {
         User seller = currentUserProvider.getAuthenticatedUser();
@@ -46,7 +50,10 @@ public class SellerProductServiceImpl implements SellerProductService {
             throw new RuntimeException("Failed to upload image", e);
         }
 
-        Product product = Mapper.mapCreateProductRequestToProduct(request);
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+
+        Product product = Mapper.mapCreateProductRequestToProduct(request, category);
         product.setImageUrl(imageUrl);
         product.setSellerId(seller.getId());
 
@@ -80,7 +87,14 @@ public class SellerProductServiceImpl implements SellerProductService {
             }
         }
 
-        Product updatedProduct = Mapper.mapUpdateProductRequestToProduct(request, existingProduct);
+        Category category = null;
+        if (request.getCategoryId() != null) {
+            category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+        }
+
+
+        Product updatedProduct = Mapper.mapUpdateProductRequestToProduct(request, existingProduct, category);
         updatedProduct.setImageUrl(imageUrl);
 
         Product savedProduct = productRepository.save(updatedProduct);
@@ -128,6 +142,16 @@ public class SellerProductServiceImpl implements SellerProductService {
     }
 
     @Override
+    public List<ProductResponse> getProductsByCategory(String categoryId) {
+        User seller = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSeller(seller);
+
+        List<Product> products = productRepository.findBySellerIdAndCategoryId(seller.getId(), categoryId);
+        return Mapper.mapProductListToResponseList(products);
+    }
+
+
+    @Override
     public ProductResponse updateStock(UpdateStockRequest request) {
         User seller = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateRole(seller, Role.SELLER);
@@ -143,6 +167,29 @@ public class SellerProductServiceImpl implements SellerProductService {
         Product updatedProduct = productRepository.save(product);
         return Mapper.mapProductToProductResponse(updatedProduct);
     }
+
+    @Override
+    public List<ProductResponse> getMyProducts(String categoryIdOrName) {
+        User seller = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSeller(seller);
+
+        List<Product> products;
+
+        if (categoryIdOrName != null && !categoryIdOrName.isBlank()) {
+            if (categoryRepository.existsById(categoryIdOrName)) {
+                products = productRepository.findBySellerIdAndCategoryId(seller.getId(), categoryIdOrName);
+            } else {
+                Category category = categoryRepository.findByNameIgnoreCase(categoryIdOrName)
+                        .orElseThrow(() -> new EntityNotFoundException("Category not found: " + categoryIdOrName));
+                products = productRepository.findBySellerIdAndCategoryId(seller.getId(), category.getId());
+            }
+        } else {
+            products = productRepository.findBySellerId(seller.getId());
+        }
+
+        return Mapper.mapProductListToResponseList(products);
+    }
+
 
 }
 
