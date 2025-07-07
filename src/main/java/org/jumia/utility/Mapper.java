@@ -1,6 +1,7 @@
 package org.jumia.utility;
 
 import org.jumia.data.models.*;
+import org.jumia.data.respositories.ProductRepository;
 import org.jumia.dtos.requests.*;
 import org.jumia.dtos.responses.*;
 import java.time.LocalDateTime;
@@ -31,20 +32,29 @@ public class Mapper {
         return response;
     }
 
-    public static Product mapCreateProductRequestToProduct(CreateProductRequest request) {
+    public static Product mapCreateProductRequestToProduct(CreateProductRequest request, Category category) {
         Product product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setQuantityAvailable(request.getQuantityAvailable());
+
+
+        product.setCategoryId(category.getId());
+        product.setCategoryName(category.getName()); // Snapshot for performance
         return product;
     }
 
-    public static Product mapUpdateProductRequestToProduct(UpdateProductRequest request, Product existingProduct) {
+    public static Product mapUpdateProductRequestToProduct(UpdateProductRequest request, Product existingProduct, Category category) {
         existingProduct.setName(request.getName());
         existingProduct.setDescription(request.getDescription());
         existingProduct.setPrice(request.getPrice());
         existingProduct.setQuantityAvailable(request.getQuantityAvailable());
+
+        if (category != null) {
+            existingProduct.setCategoryId(category.getId());
+            existingProduct.setCategoryName(category.getName());
+        }
         return existingProduct;
     }
 
@@ -57,6 +67,9 @@ public class Mapper {
         response.setQuantityAvailable(product.getQuantityAvailable());
         response.setSellerId(product.getSellerId());
         response.setImageUrl(product.getImageUrl());
+
+        response.setCategoryId(product.getCategoryId());
+        response.setCategoryName(product.getCategoryName());
         return response;
     }
 
@@ -230,6 +243,28 @@ public class Mapper {
         }
         throw new IllegalArgumentException("Product not found: " + productId);
     }
+
+
+    public static CategoryResponse mapCategoryToResponse(Category category, long productCount) {
+        CategoryResponse response = new CategoryResponse();
+        response.setId(category.getId());
+        response.setName(category.getName());
+        response.setDescription(category.getDescription());
+        response.setProductCount(productCount);
+        return response;
+    }
+
+
+    public static List<CategoryResponse> mapCategoryListToResponseList(List<Category> categories, ProductRepository productRepository) {
+        List<CategoryResponse> responses = new ArrayList<>();
+        for (Category category : categories) {
+            long count = productRepository.countByCategoryId(category.getId());
+            responses.add(mapCategoryToResponse(category, count));
+        }
+        return responses;
+    }
+
+
 }
 
 
