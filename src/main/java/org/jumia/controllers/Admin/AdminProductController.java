@@ -54,21 +54,18 @@ public class AdminProductController {
 //        return ResponseEntity.ok(updated);
 //    }
 
-    // 🔐 SUPER_ADMIN only
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable String id) {
         adminProductService.deleteProductAsAdmin(id);
         return ResponseEntity.ok("Product deleted successfully.");
     }
 
-    // 🔐 ADMIN or SUPER_ADMIN
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable String id) {
         ProductResponse response = adminProductService.getProductByIdAsAdmin(id);
         return ResponseEntity.ok(response);
     }
 
-    // 🔐 ADMIN or SUPER_ADMIN
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<ProductResponse> products = adminProductService.getAllProductsAsAdmin();
