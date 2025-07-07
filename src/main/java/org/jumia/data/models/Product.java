@@ -19,6 +19,7 @@ public class Product {
     private String sellerId;
     private String imageUrl;
 
-
+    private String categoryId;     // New field
+    private String categoryName;   // Snapshot of category name
 
 }
