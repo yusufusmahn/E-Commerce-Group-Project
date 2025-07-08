@@ -1,7 +1,7 @@
 package org.jumia.controllers.seller;
 
-import org.jumia.dtos.requests.UpdateOrderRequest;
-import org.jumia.dtos.responses.OrderResponse;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.seller.SellerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
