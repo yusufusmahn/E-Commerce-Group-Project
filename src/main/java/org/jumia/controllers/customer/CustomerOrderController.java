@@ -1,14 +1,11 @@
 package org.jumia.controllers.customer;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.jumia.dtos.requests.CreateOrderRequest;
-import org.jumia.dtos.responses.ApiResponse;
-import org.jumia.dtos.responses.OrderResponse;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.customer.CustomerOrderService;
 
 import java.util.List;
