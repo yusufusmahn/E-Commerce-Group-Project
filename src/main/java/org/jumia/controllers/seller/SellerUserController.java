@@ -1,9 +1,7 @@
 package org.jumia.controllers.seller;
 
-import org.jumia.dtos.requests.UpdateSellerDetailsRequest;
-import org.jumia.dtos.requests.UpdateStoreNameRequest;
-import org.jumia.dtos.responses.SellerAnalyticsResponse;
-import org.jumia.dtos.responses.UserResponse;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.seller.SellerUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
