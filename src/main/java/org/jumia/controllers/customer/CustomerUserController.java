@@ -1,7 +1,6 @@
 package org.jumia.controllers.customer;
 
-import org.jumia.dtos.responses.CustomerAnalyticsResponse;
-import org.jumia.dtos.responses.UserResponse;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.customer.CustomerUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
