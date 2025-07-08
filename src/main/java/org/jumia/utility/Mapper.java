@@ -1,13 +1,12 @@
 package org.jumia.utility;
 
 import org.jumia.data.models.*;
-import org.jumia.data.respositories.ProductRepository;
+import org.jumia.data.respositories.*;
 import org.jumia.dtos.requests.*;
 import org.jumia.dtos.responses.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.jumia.security.RoleValidator.getRoleNames;
 
 public class Mapper {
