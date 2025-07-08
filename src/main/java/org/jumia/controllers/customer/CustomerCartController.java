@@ -1,9 +1,8 @@
 package org.jumia.controllers.customer;
 
 import jakarta.validation.Valid;
-import org.jumia.dtos.requests.AddToCartRequest;
-import org.jumia.dtos.requests.UpdateCartRequest;
-import org.jumia.dtos.responses.CartResponse;
+import org.jumia.dtos.requests.*;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.customer.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
