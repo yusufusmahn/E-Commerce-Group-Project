@@ -1,7 +1,6 @@
 package org.jumia.controllers.seller;
 
-import org.jumia.dtos.responses.CategoryResponse;
-import org.jumia.dtos.responses.ProductResponse;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.seller.SellerCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
