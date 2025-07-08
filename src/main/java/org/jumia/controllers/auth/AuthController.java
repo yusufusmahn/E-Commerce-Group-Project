@@ -1,10 +1,8 @@
 package org.jumia.controllers.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.jumia.dtos.requests.ForgotPasswordRequest;
-import org.jumia.dtos.requests.ResetPasswordRequest;
-import org.jumia.services.auth.LogoutService;
-import org.jumia.services.auth.PasswordService;
+import org.jumia.dtos.requests.*;
+import org.jumia.services.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +25,7 @@ public class AuthController {
         passwordService.sendResetLink(request);
         return ResponseEntity.ok("Reset link sent to your email.");
     }
+
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
