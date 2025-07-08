@@ -1,6 +1,6 @@
 package org.jumia.controllers.seller;
 
-import org.jumia.dtos.responses.SalesReportResponse;
+import org.jumia.dtos.responses.*;
 import org.jumia.services.seller.SellerAnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
