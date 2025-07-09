@@ -30,11 +30,13 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Autowired
     private ProductRepository productRepository;
 
+
     @Override
     public OrderResponse placeOrder(CreateOrderRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSelf(currentUser);
 
+        // Fetch full product details based on product IDs
         List<Product> fullProducts = new ArrayList<>();
         for (OrderedProductDTO dto : request.getProducts()) {
             Product product = productRepository.findById(dto.getProductId())
@@ -42,14 +44,44 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             fullProducts.add(product);
         }
 
+        // Create the Order object
         Order order = Mapper.mapCreateOrderRequestToOrder(request, fullProducts);
         order.setUserId(currentUser.getId());
+        order.setStatus(OrderStatus.PENDING); // Always start as PENDING
 
+        // Include the Paystack payment reference
+        order.setPaymentReference(request.getPaymentReference());
+
+        // Save the order before redirecting to Paystack or receiving webhook
         Order savedOrder = orderRepository.save(order);
+
+        // Build the product response details
         List<OrderedProductResponse> responseProducts = Mapper.buildOrderedProductResponses(savedOrder.getProducts());
 
         return Mapper.mapOrderToOrderResponse(savedOrder, responseProducts);
     }
+
+
+//    @Override
+//    public OrderResponse placeOrder(CreateOrderRequest request) {
+//        User currentUser = currentUserProvider.getAuthenticatedUser();
+//        RoleValidator.validateSelf(currentUser);
+//
+//        List<Product> fullProducts = new ArrayList<>();
+//        for (OrderedProductDTO dto : request.getProducts()) {
+//            Product product = productRepository.findById(dto.getProductId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + dto.getProductId()));
+//            fullProducts.add(product);
+//        }
+//
+//        Order order = Mapper.mapCreateOrderRequestToOrder(request, fullProducts);
+//        order.setUserId(currentUser.getId());
+//
+//        Order savedOrder = orderRepository.save(order);
+//        List<OrderedProductResponse> responseProducts = Mapper.buildOrderedProductResponses(savedOrder.getProducts());
+//
+//        return Mapper.mapOrderToOrderResponse(savedOrder, responseProducts);
+//    }
 
     @Override
     public List<OrderResponse> getCustomerOrders() {
