@@ -179,6 +179,51 @@ public class CustomerCartServiceImpl implements CustomerCartService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public void mergeGuestCart(List<GuestCartItemDTO> items) {
+        User user = currentUserProvider.getAuthenticatedUser(); // authenticate
+        RoleValidator.validateCustomer(user); // only for customer
+
+        Cart cart = cartRepository.findByUserId(user.getId()).orElse(new Cart());
+        cart.setUserId(user.getId());
+
+        if (cart.getItems() == null) {
+            cart.setItems(new ArrayList<>());
+        }
+
+        for (GuestCartItemDTO dto : items) {
+            Product product = productRepository.findById(dto.getProductId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + dto.getProductId()));
+
+            CartItem existingItem = null;
+            for (CartItem item : cart.getItems()) {
+                if (item != null && item.getProduct() != null && item.getProduct().getId().equals(dto.getProductId())) {
+                    existingItem = item;
+                    break;
+                }
+            }
+
+            if (existingItem != null) {
+                int newQuantity = existingItem.getQuantity() + dto.getQuantity();
+                existingItem.setQuantity(newQuantity);
+                existingItem.setTotalPrice(product.getPrice() * newQuantity);
+            } else {
+                CartItem newItem = new CartItem();
+                newItem.setProduct(product);
+                newItem.setQuantity(dto.getQuantity());
+                newItem.setTotalPrice(product.getPrice() * dto.getQuantity());
+
+                cartItemRepository.save(newItem);
+                cart.getItems().add(newItem);
+            }
+        }
+
+        cart.setTotalAmount(calculateTotalAmount(cart));
+        cart.setLastUpdated(LocalDateTime.now());
+        cartRepository.save(cart);
+    }
+
+
     private double calculateTotalAmount(Cart cart) {
         double total = 0.0;
         if (cart.getItems() == null) return 0.0;
