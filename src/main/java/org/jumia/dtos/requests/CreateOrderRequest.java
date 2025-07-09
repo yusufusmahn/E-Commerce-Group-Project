@@ -17,6 +17,9 @@ public class CreateOrderRequest {
 
     @NotEmpty(message = "Products list must not be empty.")
     private List<OrderedProductDTO> products;
+
+    private String paymentReference;
+
 }
 
 
