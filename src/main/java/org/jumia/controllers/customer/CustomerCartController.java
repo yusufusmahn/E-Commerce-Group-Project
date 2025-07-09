@@ -7,6 +7,8 @@ import org.jumia.services.customer.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/customer/cart")
 public class CustomerCartController {
@@ -38,4 +40,10 @@ public class CustomerCartController {
     public void clearCart() {
         cartService.clearCartForCurrentUser();
     }
+
+    @PostMapping("/merge")
+    public void mergeGuestCart(@RequestBody List<GuestCartItemDTO> items) {
+        cartService.mergeGuestCart(items);
+    }
+
 }
