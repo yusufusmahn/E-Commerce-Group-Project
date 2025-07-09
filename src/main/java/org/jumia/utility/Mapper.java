@@ -104,6 +104,7 @@ public class Mapper {
 
         order.setProducts(orderedProducts);
         order.setCreatedAt(LocalDateTime.now());
+        order.setPaymentReference(request.getPaymentReference());
         return order;
     }
 
