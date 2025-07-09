@@ -9,4 +9,5 @@ import jakarta.validation.constraints.NotNull;
 public class UpdateOrderStatusRequest {
     @NotNull
     private OrderStatus status;
+
 }
