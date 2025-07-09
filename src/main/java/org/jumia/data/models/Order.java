@@ -21,5 +21,9 @@ public class Order {
 
     private LocalDateTime createdAt;
 
+    private String paymentReference;
+    private LocalDateTime paidAt;
+
+
 
 }
