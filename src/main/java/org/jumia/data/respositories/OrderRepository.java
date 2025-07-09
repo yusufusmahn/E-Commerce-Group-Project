@@ -6,6 +6,7 @@ import org.jumia.data.models.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findByUserId(String userId);
@@ -14,6 +15,8 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findBySellerIdAndStatus(String sellerId, OrderStatus status);
     List<Order> findBySellerId(String sellerId);
     List<Order> findByUserIdAndStatus(String userId, OrderStatus status);
+    Optional<Order> findByPaymentReference(String reference);
+
 
 
 }
