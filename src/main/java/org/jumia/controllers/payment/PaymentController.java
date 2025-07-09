@@ -72,11 +72,9 @@ public class PaymentController {
                     order.setPaidAt(LocalDateTime.now());
                     orderRepository.save(order);
 
-                    // Fetch user info
                     User user = userRepository.findById(order.getUserId())
                             .orElseThrow(() -> new ResourceNotFoundException("User not found for order"));
 
-                    // Compose and send email
                     String subject = "🎉 Payment Successful - Your Order is Confirmed!";
                     String body = """
             Dear %s,<br><br>
@@ -91,10 +89,7 @@ public class PaymentController {
 
                     return ResponseEntity.ok("Payment verified, order updated, and confirmation email sent");
                 }
-
-
             }
-
             return ResponseEntity.ok("Event received");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Webhook error");
