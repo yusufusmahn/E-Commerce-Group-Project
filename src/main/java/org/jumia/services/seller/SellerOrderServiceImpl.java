@@ -2,6 +2,7 @@ package org.jumia.services.seller;
 
 import org.jumia.data.models.*;
 import org.jumia.dtos.responses.OrderedProductResponse;
+import org.jumia.services.audit.GeneralAuditLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.jumia.data.respositories.OrderRepository;
@@ -13,6 +14,7 @@ import org.jumia.security.CurrentUserProvider;
 import org.jumia.security.RoleValidator;
 import org.jumia.utility.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class SellerOrderServiceImpl implements SellerOrderService {
 
     @Autowired
     private CurrentUserProvider currentUserProvider;
+
+    @Autowired
+    private GeneralAuditLogService auditLogService;
 
     @Override
     public List<OrderResponse> getOrdersBySellerId() {
@@ -75,7 +80,6 @@ public class SellerOrderServiceImpl implements SellerOrderService {
         User seller = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSeller(seller);
 
-        // ✅ Convert string to enum
         OrderStatus orderStatus;
         try {
             orderStatus = OrderStatus.valueOf(status.toUpperCase());
@@ -86,6 +90,38 @@ public class SellerOrderServiceImpl implements SellerOrderService {
         List<Order> orders = orderRepository.findBySellerIdAndStatus(seller.getId(), orderStatus);
         return Mapper.mapOrderListToResponseList(orders);
     }
+
+    @Override
+    public void markOrderAsShipped(String orderId) {
+        User seller = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSeller(seller);
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+
+        if (!order.getSellerId().equals(seller.getId())) {
+            throw new AccessDeniedException("You can only mark your own orders as shipped.");
+        }
+
+        if (order.getStatus() != OrderStatus.PROCESSING) {
+            throw new IllegalStateException("Only orders with status PROCESSING can be marked as SHIPPED.");
+        }
+
+        order.setStatus(OrderStatus.SHIPPED);
+        order.setUpdatedAt(LocalDateTime.now());
+        orderRepository.save(order);
+
+        auditLogService.log(
+                seller.getId(),
+                RoleValidator.getAnyRole(seller), // safely gets any available role
+                "MARK_ORDER_SHIPPED",
+                "ORDER",
+                order.getId(),
+                "Seller marked order as SHIPPED"
+        );
+
+    }
+
 
     private List<Product> extractProductsFromOrder(Order order) {
         List<Product> products = new ArrayList<>();
