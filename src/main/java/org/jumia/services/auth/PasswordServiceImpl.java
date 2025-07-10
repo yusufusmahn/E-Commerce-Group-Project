@@ -33,7 +33,12 @@ public class PasswordServiceImpl implements PasswordService {
 
         String resetToken = jwtUtil.generateToken(user.getEmail(), List.of());
 
+
         user.setResetToken(resetToken);
+
+        System.out.println("Reset token: " + resetToken);
+        System.out.println("Saved in DB: " + user.getResetToken());
+
         user.setResetTokenExpiry(System.currentTimeMillis() + jwtUtil.getExpirationTime());
         userRepository.save(user);
 
@@ -65,6 +70,10 @@ public class PasswordServiceImpl implements PasswordService {
         if (user.getResetTokenExpiry() < System.currentTimeMillis()) {
             throw new TokenExpiredException("Reset token has expired.");
         }
+
+        System.out.println("Token from request: " + request.getToken());
+        System.out.println("Token in DB: " + user.getResetToken());
+
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.setResetToken(null);
