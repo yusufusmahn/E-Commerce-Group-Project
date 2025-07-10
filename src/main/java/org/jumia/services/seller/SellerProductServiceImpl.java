@@ -13,7 +13,10 @@ import org.jumia.security.RoleValidator;
 import org.jumia.utility.Mapper;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,6 +60,10 @@ public class SellerProductServiceImpl implements SellerProductService {
         product.setImageUrl(imageUrl);
         product.setSellerId(seller.getId());
 
+        product.setStatus(ProductStatus.PENDING);
+        product.setRejectionReason(null);
+
+
         Product savedProduct = productRepository.save(product);
         return Mapper.mapProductToProductResponse(savedProduct);
     }
@@ -96,6 +103,10 @@ public class SellerProductServiceImpl implements SellerProductService {
 
         Product updatedProduct = Mapper.mapUpdateProductRequestToProduct(request, existingProduct, category);
         updatedProduct.setImageUrl(imageUrl);
+
+        existingProduct.setStatus(ProductStatus.PENDING);
+        existingProduct.setRejectionReason(null);
+
 
         Product savedProduct = productRepository.save(updatedProduct);
         return Mapper.mapProductToProductResponse(savedProduct);
@@ -137,7 +148,9 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Override
     public List<ProductResponse> getAllProducts() {
+//        List<Product> products = productRepository.findByStatus(ProductStatus.APPROVED);
         List<Product> products = productRepository.findAll();
+
         return Mapper.mapProductListToResponseList(products);
     }
 
@@ -189,6 +202,102 @@ public class SellerProductServiceImpl implements SellerProductService {
 
         return Mapper.mapProductListToResponseList(products);
     }
+
+    @Override
+    public List<ProductResponse> uploadCSV(MultipartFile csvFile, List<MultipartFile> images) {
+        User seller = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSeller(seller);
+
+        List<Product> savedProducts = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
+            String line;
+            boolean isFirstLine = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue; // Skip headers
+                }
+
+                String[] fields = line.split(",");
+
+                if (fields.length < 6) {
+                    throw new IllegalArgumentException("Invalid CSV format. Expecting: name,description,price,quantity,categoryId,imageName");
+                }
+
+                String name = fields[0].trim();
+                String description = fields[1].trim();
+                double price = Double.parseDouble(fields[2].trim());
+                int quantity = Integer.parseInt(fields[3].trim());
+                String categoryId = fields[4].trim();
+                String imageName = fields[5].trim();
+
+                // Find matching image
+//                MultipartFile imageFile = images.stream()
+//                        .filter(img -> img.getOriginalFilename() != null && img.getOriginalFilename().equals(imageName))
+//                        .findFirst()
+//                        .orElseThrow(() -> new ResourceNotFoundException("Image not found: " + imageName));
+
+                // simplified
+                MultipartFile imageFile = null;
+                for (MultipartFile img : images) {
+                    if (img.getOriginalFilename() != null && img.getOriginalFilename().equals(imageName)) {
+                        imageFile = img;
+                        break;
+                    }
+                }
+                if (imageFile == null) {
+                    throw new ResourceNotFoundException("Image not found: " + imageName);
+                }
+
+
+
+                if (imageFile.getSize() > 2 * 1024 * 1024) {
+                    throw new IllegalArgumentException("Image " + imageName + " exceeds 2MB size limit");
+                }
+
+                String imageUrl = cloudinaryService.uploadImage(imageFile);
+
+                Category category = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + categoryId));
+
+//                Product product = new Product();
+//                product.setName(name);
+//                product.setDescription(description);
+//                product.setPrice(price);
+//                product.setQuantityAvailable(quantity);
+//                product.setCategoryId(category.getId());
+//                product.setCategoryName(category.getName());
+//                product.setImageUrl(imageUrl);
+//                product.setStatus(ProductStatus.PENDING);
+//                product.setSellerId(seller.getId());
+
+                Product product = Mapper.mapCsvRowToProduct(
+                        name,
+                        description,
+                        price,
+                        quantity,
+                        category,
+                        imageUrl,
+                        seller.getId()
+                );
+
+                savedProducts.add(product);
+
+
+                savedProducts.add(product);
+            }
+
+            List<Product> saved = productRepository.saveAll(savedProducts);
+            return Mapper.mapProductListToResponseList(saved);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to process CSV or image", e);
+        }
+    }
+
+
 
 
 }
