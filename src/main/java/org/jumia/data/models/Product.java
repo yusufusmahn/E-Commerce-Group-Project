@@ -19,7 +19,10 @@ public class Product {
     private String sellerId;
     private String imageUrl;
 
-    private String categoryId;     // New field
-    private String categoryName;   // Snapshot of category name
+    private String categoryId;
+    private String categoryName;
+
+    private ProductStatus status = ProductStatus.PENDING;
+    private String rejectionReason;
 
 }
