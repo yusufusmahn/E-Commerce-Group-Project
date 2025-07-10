@@ -1,6 +1,7 @@
 package org.jumia.services.admin;
 
 import org.jumia.dtos.requests.CreateProductRequest;
+import org.jumia.dtos.requests.RejectProductRequest;
 import org.jumia.dtos.requests.UpdateProductRequest;
 import org.jumia.dtos.responses.ProductResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,5 +17,10 @@ public interface AdminProductService {
     ProductResponse addProductAsAdmin(CreateProductRequest request, MultipartFile image);
     ProductResponse updateProductAsAdmin(String productId, UpdateProductRequest request, MultipartFile image);
 //    List<ProductResponse> getProductsByCategory(String categoryId);
+
+    ProductResponse approveProduct(String productId);
+
+    ProductResponse rejectProduct(String productId, RejectProductRequest request);
+
 
 }
