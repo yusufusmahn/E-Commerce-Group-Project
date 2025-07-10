@@ -10,4 +10,6 @@ public interface SellerOrderService {
     OrderResponse updateOrderBySeller(String orderId, UpdateOrderRequest request);
     void cancelOrderBySeller(String orderId);
     List<OrderResponse> getOrdersByStatus(String status);
+    void markOrderAsShipped(String orderId);
+
 }
