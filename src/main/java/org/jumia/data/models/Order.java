@@ -20,6 +20,8 @@ public class Order {
     private List<OrderedProduct> products;
 
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     private String paymentReference;
     private LocalDateTime paidAt;
