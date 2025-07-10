@@ -1,8 +1,10 @@
 package org.jumia.services.admin;
 
 import org.jumia.data.models.Category;
+import org.jumia.data.models.ProductStatus;
 import org.jumia.data.models.User;
 import org.jumia.data.respositories.CategoryRepository;
+import org.jumia.dtos.requests.RejectProductRequest;
 import org.jumia.security.CurrentUserProvider;
 import org.jumia.security.RoleValidator;
 import org.jumia.services.CloudinaryService.CloudinaryService;
@@ -92,6 +94,38 @@ public class AdminProductServiceImpl implements AdminProductService {
         Product saved = productRepository.save(updated);
         return Mapper.mapProductToProductResponse(saved);
     }
+
+
+    @Override
+    public ProductResponse approveProduct(String productId) {
+        User user = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateAdminOrSuperAdmin(user); // custom validator
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        product.setStatus(ProductStatus.APPROVED);
+        product.setRejectionReason(null);
+
+        Product saved = productRepository.save(product);
+        return Mapper.mapProductToProductResponse(saved);
+    }
+
+    @Override
+    public ProductResponse rejectProduct(String productId, RejectProductRequest request) {
+        User user = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateAdminOrSuperAdmin(user);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        product.setStatus(ProductStatus.REJECTED);
+        product.setRejectionReason(request.getReason());
+
+        Product saved = productRepository.save(product);
+        return Mapper.mapProductToProductResponse(saved);
+    }
+
 
 //    @Override
 //    public List<ProductResponse> getProductsByCategory(String categoryId) {
