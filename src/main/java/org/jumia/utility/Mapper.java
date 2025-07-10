@@ -40,7 +40,7 @@ public class Mapper {
 
 
         product.setCategoryId(category.getId());
-        product.setCategoryName(category.getName()); // Snapshot for performance
+        product.setCategoryName(category.getName());
         return product;
     }
 
@@ -69,12 +69,16 @@ public class Mapper {
 
         response.setCategoryId(product.getCategoryId());
         response.setCategoryName(product.getCategoryName());
+        response.setStatus(product.getStatus().name());
+        response.setRejectionReason(product.getRejectionReason());
+
+
         return response;
     }
 
     public static Order mapCreateOrderRequestToOrder(CreateOrderRequest request, List<Product> productList) {
         Order order = new Order();
-        order.setTotalPrice(request.getTotalPrice());
+//        order.setTotalPrice(request.getTotalPrice());
 
         if (request.getOrderStatus() != null) {
             try {
@@ -109,10 +113,6 @@ public class Mapper {
     }
 
     public static Order mapUpdateOrderRequestToOrder(UpdateOrderRequest request, Order existingOrder, List<Product> productList) {
-        if (request.getTotalPrice() != null) {
-            existingOrder.setTotalPrice(request.getTotalPrice());
-        }
-
         if (request.getOrderStatus() != null) {
             try {
                 existingOrder.setStatus(OrderStatus.valueOf(request.getOrderStatus().toUpperCase()));
@@ -136,10 +136,12 @@ public class Mapper {
                 updatedProducts.add(op);
             }
             existingOrder.setProducts(updatedProducts);
+            existingOrder.setTotalPrice(calculateTotalPrice(updatedProducts));
         }
 
         return existingOrder;
     }
+
 
     public static List<OrderedProductResponse> buildOrderedProductResponses(List<OrderedProduct> orderedProducts) {
         List<OrderedProductResponse> responseList = new ArrayList<>();
@@ -263,6 +265,38 @@ public class Mapper {
         }
         return responses;
     }
+
+    private static double calculateTotalPrice(List<OrderedProduct> products) {
+        double total = 0.0;
+        for (OrderedProduct op : products) {
+            total += op.getPriceAtPurchase() * op.getQuantity();
+        }
+        return total;
+    }
+
+    public static Product mapCsvRowToProduct(
+            String name,
+            String description,
+            double price,
+            int quantity,
+            Category category,
+            String imageUrl,
+            String sellerId
+    ) {
+        Product product = new Product();
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setQuantityAvailable(quantity);
+        product.setCategoryId(category.getId());
+        product.setCategoryName(category.getName());
+        product.setImageUrl(imageUrl);
+        product.setStatus(ProductStatus.PENDING);
+        product.setSellerId(sellerId);
+        return product;
+    }
+
+
 
 
 }
