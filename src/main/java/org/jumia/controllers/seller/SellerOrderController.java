@@ -4,6 +4,7 @@ import org.jumia.dtos.requests.*;
 import org.jumia.dtos.responses.*;
 import org.jumia.services.seller.SellerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +33,19 @@ public class SellerOrderController {
         return sellerOrderService.updateOrderBySeller(orderId, request);
     }
 
+
     @DeleteMapping("/{orderId}")
     public void cancelOrder(@PathVariable String orderId) {
         sellerOrderService.cancelOrderBySeller(orderId);
     }
+
+
+    @PutMapping("/orders/{id}/ship")
+    public ResponseEntity<String> markOrderAsShipped(@PathVariable String id) {
+        sellerOrderService.markOrderAsShipped(id);
+        return ResponseEntity.ok("Order marked as SHIPPED");
+    }
 }
+
+
+
