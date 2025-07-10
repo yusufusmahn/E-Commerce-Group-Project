@@ -1,5 +1,6 @@
 package org.jumia.services.customer;
 
+import org.jumia.data.models.ProductStatus;
 import org.jumia.dtos.requests.ProductSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,21 @@ public class CustomerProductServiceImpl implements CustomerProductService {
 
     @Override
     public List<ProductResponse> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findByStatus(ProductStatus.APPROVED);
         return Mapper.mapProductListToResponseList(products);
+
     }
 
     @Override
     public ProductResponse getProductById(String productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+
+        if (product.getStatus() != ProductStatus.APPROVED) {
+            throw new ResourceNotFoundException("Product is not available");
+        }
+
+
         return Mapper.mapProductToProductResponse(product);
     }
 
@@ -38,7 +46,7 @@ public class CustomerProductServiceImpl implements CustomerProductService {
             throw new IllegalArgumentException("Search keyword must not be empty.");
         }
 
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndStatus(keyword, ProductStatus.APPROVED);
         return Mapper.mapProductListToResponseList(products);
     }
 
