@@ -2,6 +2,7 @@ package org.jumia.security;
 
 import org.jumia.data.models.Role;
 import org.jumia.data.models.User;
+import org.jumia.exceptions.AccessDeniedException;
 
 import java.util.*;
 
@@ -16,6 +17,9 @@ public class RoleValidator {
         roleHierarchy.put(Role.CUSTOMER, Set.of(Role.CUSTOMER));
     }
 
+/* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
+
+/* <<<<<<<<<<  be12ee83-b8e8-4f0b-8b3a-4da69573b849  >>>>>>>>>>> */
     public static boolean hasRole(User user, Role requiredRole) {
         if (user.getRoles() == null || user.getRoles().isEmpty()) return false;
 
@@ -27,6 +31,13 @@ public class RoleValidator {
         }
         return false;
     }
+
+    public static void validateAdminOrSuperAdmin(User user) {
+        if (!user.getRoles().contains(Role.ADMIN) && !user.getRoles().contains(Role.SUPER_ADMIN)) {
+            throw new AccessDeniedException("Only Admin or SuperAdmin can perform this action.");
+        }
+    }
+
 
     public static void validateRole(User user, Role requiredRole) {
         if (!hasRole(user, requiredRole)) {
@@ -124,6 +135,18 @@ public class RoleValidator {
     public static void validateCustomer(User user) {
         validateRole(user, Role.CUSTOMER);
     }
+
+    public static Role getAnyRole(User user) {
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            throw new IllegalStateException("User has no assigned role.");
+        }
+        for (Role role : user.getRoles()) {
+            return role; // returns the first (and only) one
+        }
+        throw new IllegalStateException("User has no assigned role.");
+    }
+
+
 
 //    public static void validateAnyRole(User user, Role... roles) {
 //        for (Role role : roles) {
