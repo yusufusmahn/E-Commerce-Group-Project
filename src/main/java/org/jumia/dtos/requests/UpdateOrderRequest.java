@@ -9,8 +9,8 @@ import java.util.List;
 
 @Data
 public class UpdateOrderRequest {
-    @Positive(message = "Total price must be greater than zero.")
-    private Double totalPrice;
+//    @Positive(message = "Total price must be greater than zero.")
+//    private Double totalPrice;
 
     private String orderStatus;
 
