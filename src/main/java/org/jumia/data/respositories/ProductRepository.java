@@ -1,5 +1,6 @@
 package org.jumia.data.respositories;
 
+import org.jumia.data.models.ProductStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.jumia.data.models.Product;
 
@@ -16,6 +17,16 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product> findByCategoryId(String categoryId);
     long countByCategoryId(String categoryId);
     List<Product> findByCategoryNameIgnoreCase(String categoryName);
+
+
+    List<Product> findByStatus(ProductStatus status);
+
+    List<Product> findByCategoryIdAndStatus(String categoryId, ProductStatus status);
+
+    List<Product> findByCategoryNameIgnoreCaseAndStatus(String name, ProductStatus status);
+
+    List<Product> findByNameContainingIgnoreCaseAndStatus(String name, ProductStatus status);
+
 
 
 
