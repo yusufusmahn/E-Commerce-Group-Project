@@ -1,17 +1,15 @@
 package org.jumia.services.superAdmin;
 
-import org.jumia.dtos.requests.PromoteToSellerRequest;
-import org.jumia.dtos.requests.RevokeSellerRoleRequest;
+import org.jumia.dtos.requests.*;
 import org.jumia.exceptions.EntityNotFoundException;
 import org.jumia.security.CurrentUserProvider;
+import org.jumia.services.audit.GeneralAuditLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.jumia.data.models.Role;
 import org.jumia.data.models.User;
 import org.jumia.data.respositories.UserRepository;
-import org.jumia.dtos.requests.PromoteToAdminRequest;
-import org.jumia.dtos.requests.RevokeAdminRoleRequest;
 import org.jumia.dtos.responses.UserResponse;
 import org.jumia.exceptions.ResourceNotFoundException;
 import org.jumia.exceptions.UserAlreadyAdminException;
@@ -30,6 +28,9 @@ public class SuperAdminServiceImpl implements SuperAdminService {
 
     @Autowired
     private CurrentUserProvider currentUserProvider;
+
+    @Autowired
+    private GeneralAuditLogService auditLogService;
 
 //    @Override
 //    public UserResponse promoteToAdmin(PromoteToAdminRequest request, User currentUser) {
@@ -245,7 +246,19 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         targetUser.setRoles(adminRoles);
 
         userRepository.save(targetUser);
+
+        auditLogService.log(
+                currentUser.getId(),
+                Role.SUPER_ADMIN,
+                "PROMOTE_TO_ADMIN",
+                "USER",
+                targetUser.getId(),
+                "Promoted user to ADMIN: " + targetUser.getEmail()
+        );
+
         return Mapper.toResponse(targetUser);
+
+
     }
 
     @Override
@@ -272,6 +285,16 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         targetUser.setPreviousRole(null);
 
         userRepository.save(targetUser);
+
+        auditLogService.log(
+                currentUser.getId(),
+                Role.SUPER_ADMIN,
+                "REVOKE_ADMIN",
+                "USER",
+                targetUser.getId(),
+                "Revoked ADMIN role, restored to: " + previousRole.name()
+        );
+
         return Mapper.toResponse(targetUser);
     }
 
@@ -305,6 +328,16 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         targetUser.setStoreName(request.getStoreName());
 
         userRepository.save(targetUser);
+
+        auditLogService.log(
+                currentUser.getId(),
+                Role.SUPER_ADMIN,
+                "PROMOTE_TO_SELLER",
+                "USER",
+                targetUser.getId(),
+                "Promoted user to SELLER: " + targetUser.getEmail()
+        );
+
         return Mapper.toResponse(targetUser);
     }
 
@@ -331,6 +364,42 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         targetUser.setStoreName(null);
 
         userRepository.save(targetUser);
+
+        auditLogService.log(
+                currentUser.getId(),
+                Role.SUPER_ADMIN,
+                "REVOKE_SELLER",
+                "USER",
+                targetUser.getId(),
+                "Revoked SELLER role, restored to: " + previousRole.name()
+        );
+
+
+        return Mapper.toResponse(targetUser);
+    }
+
+
+    @Override
+    public UserResponse deleteUser(DeleteUserRequest request) {
+        User currentUser = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSuperAdmin(currentUser);
+
+        String email = request.getEmail();
+
+        User targetUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
+
+        userRepository.delete(targetUser);
+
+        auditLogService.log(
+                currentUser.getId(),
+                Role.SUPER_ADMIN,
+                "DELETE_USER",
+                "USER",
+                targetUser.getId(),
+                "Deleted user with email: " + email
+        );
+
         return Mapper.toResponse(targetUser);
     }
 
