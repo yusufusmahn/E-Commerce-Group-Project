@@ -16,4 +16,8 @@ public class ProductResponse {
     private String categoryId;    // New
     private String categoryName;
 
+    private String status;
+    private String rejectionReason;
+
+
 }
