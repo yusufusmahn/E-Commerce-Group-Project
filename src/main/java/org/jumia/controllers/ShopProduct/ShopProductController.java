@@ -53,6 +53,10 @@ public class ShopProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/allProductsOnDisplay")
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        return ResponseEntity.ok(shopProductService.ListAllProducts());
+    }
 
 
 }
