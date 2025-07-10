@@ -1,6 +1,7 @@
 package org.jumia.controllers.Admin;
 
 import org.jumia.dtos.requests.UpdateOrderRequest;
+import org.jumia.dtos.requests.UpdateOrderStatusRequest;
 import org.jumia.dtos.responses.OrderResponse;
 import org.jumia.services.admin.AdminOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,16 @@ public class AdminOrderController {
     public ResponseEntity<?> cancelOrder(@PathVariable String id) {
         adminOrderService.cancelOrderAsAdmin(id);
         return ResponseEntity.ok("Order canceled successfully.");
+    }
+
+
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<String> updateOrderStatus(
+            @PathVariable String orderId,
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
+
+        adminOrderService.updateOrderStatus(orderId, request);
+        return ResponseEntity.ok("Order status updated successfully");
     }
 
 }
