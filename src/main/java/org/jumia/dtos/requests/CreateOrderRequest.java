@@ -9,9 +9,9 @@ import java.util.List;
 
 @Data
 public class CreateOrderRequest {
-    @NotNull(message = "Total price is required.")
-    @Positive(message = "Total price must be greater than zero.")
-    private Double totalPrice;
+//    @NotNull(message = "Total price is required.")
+//    @Positive(message = "Total price must be greater than zero.")
+//    private Double totalPrice;
 
     private String orderStatus;
 
