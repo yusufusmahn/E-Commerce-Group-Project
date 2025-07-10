@@ -46,6 +46,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         // Create the Order object
         Order order = Mapper.mapCreateOrderRequestToOrder(request, fullProducts);
+        // Set total price from helper (instead of client-sent value)
+        double totalPrice = calculateTotalPrice(request.getProducts(), fullProducts);
+        order.setTotalPrice(totalPrice);
+
         order.setUserId(currentUser.getId());
         order.setStatus(OrderStatus.PENDING); // Always start as PENDING
 
@@ -155,4 +159,20 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         return responses;
     }
+
+    private double calculateTotalPrice(List<OrderedProductDTO> productDTOs, List<Product> fullProducts) {
+        double total = 0.0;
+
+        for (OrderedProductDTO dto : productDTOs) {
+            for (Product product : fullProducts) {
+                if (product.getId().equals(dto.getProductId())) {
+                    total += product.getPrice() * dto.getQuantity();
+                    break;
+                }
+            }
+        }
+
+        return total;
+    }
+
 }
