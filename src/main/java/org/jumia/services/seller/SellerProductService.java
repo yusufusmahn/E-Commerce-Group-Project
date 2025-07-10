@@ -47,4 +47,7 @@ public interface SellerProductService {
 
     List<ProductResponse> getMyProducts(String categoryIdOrName);
 
+    List<ProductResponse> uploadCSV(MultipartFile csvFile, List<MultipartFile> images);
+
+
 }
