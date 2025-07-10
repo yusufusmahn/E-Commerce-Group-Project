@@ -71,4 +71,15 @@ public class SellerProductController {
     public List<ProductResponse> getMyProducts(@RequestParam(required = false) String categoryIdOrName) {
         return sellerProductService.getMyProducts(categoryIdOrName);
     }
+
+
+
+    @PostMapping(value = "/upload-csv", consumes = {"multipart/form-data"})
+    public ResponseEntity<List<ProductResponse>> uploadCSVWithImages(
+            @RequestPart("file") MultipartFile csvFile,
+            @RequestPart("images") List<MultipartFile> images
+    ) {
+        return ResponseEntity.ok(sellerProductService.uploadCSV(csvFile, images));
+    }
+
 }
