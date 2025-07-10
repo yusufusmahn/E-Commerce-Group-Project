@@ -386,20 +386,6 @@ public class Mapper {
         }
 
         List<OrderedProduct> orderedProducts = new ArrayList<>();
-        for (OrderedProductDTO dto : request.getProducts()) {
-            OrderedProduct orderedProduct = new OrderedProduct();
-            Product product = new Product();
-            product.setId(dto.getProductId());
-            orderedProduct.setProduct(product);
-            orderedProduct.setQuantity(dto.getQuantity());
-            orderedProducts.add(orderedProduct);
-        }
-
-        order.setProducts(orderedProducts);
-        order.setCreatedAt(LocalDateTime.now()); // ✅ auto timestamp
-
-        return order;
-    }
 
 
 
