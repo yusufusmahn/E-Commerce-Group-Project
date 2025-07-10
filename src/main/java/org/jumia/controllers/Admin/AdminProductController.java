@@ -71,4 +71,21 @@ public class AdminProductController {
         List<ProductResponse> products = adminProductService.getAllProductsAsAdmin();
         return ResponseEntity.ok(products);
     }
+
+
+    @PatchMapping("/{productId}/approve")
+    public ResponseEntity<ProductResponse> approveProduct(@PathVariable String productId) {
+        return ResponseEntity.ok(adminProductService.approveProduct(productId));
+    }
+
+    @PatchMapping("/{productId}/reject")
+    public ResponseEntity<ProductResponse> rejectProduct(
+            @PathVariable String productId,
+            @RequestBody @Valid RejectProductRequest request
+    ) {
+        return ResponseEntity.ok(adminProductService.rejectProduct(productId, request));
+    }
+
+
+
 }
