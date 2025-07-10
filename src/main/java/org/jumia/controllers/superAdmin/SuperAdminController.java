@@ -1,15 +1,13 @@
 package org.jumia.controllers.superAdmin;
 
-import org.jumia.dtos.requests.PromoteToSellerRequest;
-import org.jumia.dtos.requests.RevokeSellerRoleRequest;
+import jakarta.validation.Valid;
+import org.jumia.dtos.requests.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.jumia.data.models.User;
-import org.jumia.dtos.requests.PromoteToAdminRequest;
-import org.jumia.dtos.requests.RevokeAdminRoleRequest;
 import org.jumia.dtos.responses.UserResponse;
 import org.jumia.exceptions.ResourceNotFoundException;
 import org.jumia.security.CurrentUserProvider;
@@ -93,6 +91,13 @@ public class SuperAdminController {
         UserResponse response = superAdminService.revokeSellerRole(request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/delete-user")
+    public ResponseEntity<UserResponse> deleteUser(@RequestBody @Valid DeleteUserRequest request) {
+        UserResponse deletedUser = superAdminService.deleteUser(request);
+        return ResponseEntity.ok(deletedUser);
+    }
+
 
 
 }
