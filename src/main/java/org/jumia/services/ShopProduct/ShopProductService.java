@@ -10,6 +10,8 @@ public interface ShopProductService {
     List<ProductResponse> getAllProducts(String categoryIdOrName);
     List<ProductResponse> getProductsByCategoryName(String name);
     List<ProductResponse> getProductsByName(String name);
+    public List<ProductResponse> ListAllProducts();
 
 
-}
+
+    }
