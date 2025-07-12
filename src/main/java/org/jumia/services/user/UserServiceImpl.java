@@ -272,16 +272,41 @@ public UserResponse registerUser(RegisterUserRequest request) {
     public UserResponse updateProfile(UpdateProfileRequest request) {
         User user = currentUserProvider.getAuthenticatedUser();
 
-        if (request.getName() != null) user.setName(request.getName());
-        if (request.getStoreName() != null && RoleValidator.isSeller(user)) {
-            user.setStoreName(request.getStoreName());
+        if (request.getName() != null) {
+            user.setName(Mapper.formatFullName(request.getName()));
         }
-        if (request.getContactInfo() != null) user.setContactInfo(request.getContactInfo());
-        if (request.getDescription() != null) user.setDescription(request.getDescription());
+
+        if (request.getStoreName() != null && RoleValidator.isSeller(user)) {
+            user.setStoreName(Mapper.formatFullName(request.getStoreName()));
+        }
+
+        if (request.getContactInfo() != null) {
+            user.setContactInfo(request.getContactInfo());
+        }
+
+        if (request.getDescription() != null) {
+            user.setDescription(request.getDescription());
+        }
 
         User updatedUser = userRepository.save(user);
         return Mapper.toResponse(updatedUser);
     }
+
+
+//    @Override
+//    public UserResponse updateProfile(UpdateProfileRequest request) {
+//        User user = currentUserProvider.getAuthenticatedUser();
+//
+//        if (request.getName() != null) user.setName(request.getName());
+//        if (request.getStoreName() != null && RoleValidator.isSeller(user)) {
+//            user.setStoreName(request.getStoreName());
+//        }
+//        if (request.getContactInfo() != null) user.setContactInfo(request.getContactInfo());
+//        if (request.getDescription() != null) user.setDescription(request.getDescription());
+//
+//        User updatedUser = userRepository.save(user);
+//        return Mapper.toResponse(updatedUser);
+//    }
 
 
 
