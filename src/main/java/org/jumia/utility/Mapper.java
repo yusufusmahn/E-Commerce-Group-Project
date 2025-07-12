@@ -11,13 +11,25 @@ import static org.jumia.security.RoleValidator.getRoleNames;
 
 public class Mapper {
 
+//    public static User toEntity(RegisterUserRequest request) {
+//        User user = new User();
+//        user.setName(request.getName());
+//        user.setEmail(request.getEmail());
+//        user.setPassword(request.getPassword());
+//        return user;
+//    }
+
     public static User toEntity(RegisterUserRequest request) {
         User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+
+
+        // Clean and format inputs
+        user.setEmail(cleanEmail(request.getEmail()));
+        user.setName(formatFullName(request.getName()));
         user.setPassword(request.getPassword());
         return user;
     }
+
 
     public static UserResponse toResponse(User user) {
         UserResponse response = new UserResponse();
@@ -284,7 +296,7 @@ public class Mapper {
             String sellerId
     ) {
         Product product = new Product();
-        product.setName(name);
+        product.setName(Mapper.formatFullName(name));
         product.setDescription(description);
         product.setPrice(price);
         product.setQuantityAvailable(quantity);
@@ -296,6 +308,36 @@ public class Mapper {
         return product;
     }
 
+
+
+
+    public static String cleanEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
+    }
+
+    public static String formatFullName(String input) {
+        if (input == null || input.isBlank()) return input;
+
+        String[] words = input.trim().toLowerCase().split("\\s+");
+        StringBuilder formatted = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                formatted.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return formatted.toString().trim();
+    }
+
+
+    public static String formatSentenceCase(String input) {
+        if (input == null || input.isBlank()) return input;
+        input = input.trim().toLowerCase();
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
+    }
 
 
 
