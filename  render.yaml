@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: jumia-ecommerce-app
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: main
+    buildFilter:
+      paths:
+        - Dockerfile
+        - src/**
+        - pom.xml
+    dockerContext: .
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
