@@ -1,0 +1,20 @@
+# Ignore target folder (except JAR file if already built)
+target/
+!target/E-COMMERCE-JUMIA-1.0-SNAPSHOT.jar
+
+# Ignore other unnecessary stuff
+.idea
+*.iml
+*.log
+*.class
+*.jar
+*.war
+*.zip
+*.db
+.DS_Store
+.env
+.git
+.gitignore
+.vscode
+node_modules
+src/main/resources/fake-images/
