@@ -30,7 +30,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     private void validateAdminRole() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User adminUser = userRepository.findByEmail(email)
+        User adminUser = userRepository.findByEmail(Mapper.cleanEmail(email))
                 .orElseThrow(() -> new SecurityException("Authenticated admin not found"));
 
         if (adminUser.getRoles() == null || !adminUser.getRoles().contains(Role.ADMIN)) {
@@ -81,7 +81,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         List<String> emails = request.getEmails();
         for (String email : emails) {
-            User user = userRepository.findByEmail(email).orElse(null);
+            User user = userRepository.findByEmail(Mapper.cleanEmail(email))
+                    .orElse(null);
             if (user != null) {
                 userRepository.delete(user);
             }
@@ -131,7 +132,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateRole(currentUser, Role.ADMIN);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(Mapper.cleanEmail(email))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         return Mapper.toResponse(user);
     }
@@ -141,7 +142,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateRole(currentUser, Role.ADMIN);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(Mapper.cleanEmail(email))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         userRepository.delete(user);
     }
@@ -188,6 +189,10 @@ public List<UserResponse> searchUsers(UserSearchRequest request) {
 
     String email = request.getEmail();
     String role = request.getRole();
+
+    if (email != null) {
+        email = email.trim().toLowerCase();
+    }
 
     List<User> users;
 
