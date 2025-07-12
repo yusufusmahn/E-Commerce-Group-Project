@@ -225,7 +225,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSuperAdmin(currentUser);
 
-        User targetUser = userRepository.findByEmail(request.getEmail())
+        User targetUser = userRepository.findByEmail(Mapper.cleanEmail(request.getEmail()))
+
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + request.getEmail()));
 
         if (targetUser.getRoles().contains(Role.ADMIN)) {
@@ -266,7 +267,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSuperAdmin(currentUser);
 
-        User targetUser = userRepository.findByEmail(request.getEmail())
+        User targetUser = userRepository.findByEmail(Mapper.cleanEmail(request.getEmail()))
+
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + request.getEmail()));
 
         if (!targetUser.getRoles().contains(Role.ADMIN)) {
@@ -304,7 +306,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSuperAdmin(currentUser);
 
-        User targetUser = userRepository.findByEmail(request.getEmail())
+        User targetUser = userRepository.findByEmail(Mapper.cleanEmail(request.getEmail()))
+
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + request.getEmail()));
 
         if (targetUser.getRoles().contains(Role.SELLER)) {
@@ -325,7 +328,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         }
 
         targetUser.setRoles(Set.of(Role.SELLER));
-        targetUser.setStoreName(request.getStoreName());
+        targetUser.setStoreName(Mapper.formatFullName(request.getStoreName()));
+//        targetUser.setStoreName(request.getStoreName());
 
         userRepository.save(targetUser);
 
@@ -346,7 +350,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateSuperAdmin(currentUser);
 
-        User targetUser = userRepository.findByEmail(request.getEmail())
+        User targetUser = userRepository.findByEmail(Mapper.cleanEmail(request.getEmail()))
+
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + request.getEmail()));
 
         if (!targetUser.getRoles().contains(Role.SELLER)) {
@@ -386,7 +391,8 @@ public UserResponse promoteToAdmin(PromoteToAdminRequest request) {
 
         String email = request.getEmail();
 
-        User targetUser = userRepository.findByEmail(email)
+        User targetUser = userRepository.findByEmail(Mapper.cleanEmail(request.getEmail()))
+
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
 
         userRepository.delete(targetUser);
