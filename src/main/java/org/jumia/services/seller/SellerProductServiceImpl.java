@@ -228,6 +228,91 @@ public class SellerProductServiceImpl implements SellerProductService {
 
                 String name = fields[0].trim();
                 String description = fields[1].trim();
+                double price;
+                int quantity;
+
+                try {
+                    price = Double.parseDouble(fields[2].trim());
+                    quantity = Integer.parseInt(fields[3].trim());
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid number format in CSV: " + e.getMessage());
+                }
+
+                String categoryId = fields[4].trim();
+                String imageName = fields[5].trim().toLowerCase(); // normalize filename
+
+                // Find matching image with normalized name
+                MultipartFile imageFile = null;
+                for (MultipartFile img : images) {
+                    String originalName = img.getOriginalFilename();
+                    if (originalName != null && originalName.toLowerCase().trim().equals(imageName)) {
+                        imageFile = img;
+                        break;
+                    }
+                }
+
+                if (imageFile == null) {
+                    throw new ResourceNotFoundException("Image not found: " + imageName);
+                }
+
+                if (imageFile.getSize() > 2 * 1024 * 1024) {
+                    throw new IllegalArgumentException("Image " + imageName + " exceeds 2MB size limit");
+                }
+
+                String imageUrl = cloudinaryService.uploadImage(imageFile);
+
+                Category category = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + categoryId));
+
+                Product product = Mapper.mapCsvRowToProduct(
+                        name,
+                        description,
+                        price,
+                        quantity,
+                        category,
+                        imageUrl,
+                        seller.getId()
+                );
+
+                savedProducts.add(product);
+            }
+
+            List<Product> saved = productRepository.saveAll(savedProducts);
+            return Mapper.mapProductListToResponseList(saved);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to process CSV or image", e);
+        }
+    }
+
+
+    /*
+
+    @Override
+    public List<ProductResponse> uploadCSV(MultipartFile csvFile, List<MultipartFile> images) {
+        User seller = currentUserProvider.getAuthenticatedUser();
+        RoleValidator.validateSeller(seller);
+
+        List<Product> savedProducts = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
+            String line;
+            boolean isFirstLine = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue; // Skip headers
+                }
+
+                String[] fields = line.split(",");
+
+                if (fields.length < 6) {
+                    throw new IllegalArgumentException("Invalid CSV format. Expecting: name,description,price,quantity,categoryId,imageName");
+                }
+
+                String name = fields[0].trim();
+                String description = fields[1].trim();
                 double price = Double.parseDouble(fields[2].trim());
                 int quantity = Integer.parseInt(fields[3].trim());
                 String categoryId = fields[4].trim();
@@ -284,9 +369,6 @@ public class SellerProductServiceImpl implements SellerProductService {
                 );
 
                 savedProducts.add(product);
-
-
-                savedProducts.add(product);
             }
 
             List<Product> saved = productRepository.saveAll(savedProducts);
@@ -296,6 +378,8 @@ public class SellerProductServiceImpl implements SellerProductService {
             throw new RuntimeException("Failed to process CSV or image", e);
         }
     }
+
+     */
 
 
 
