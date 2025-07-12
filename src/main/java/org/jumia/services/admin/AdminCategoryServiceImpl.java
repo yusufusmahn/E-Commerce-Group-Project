@@ -37,7 +37,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         }
 
         Category category = new Category();
-        category.setName(request.getName());
+        category.setName(Mapper.formatFullName(request.getName()));
         category.setDescription(request.getDescription());
 
         Category saved = categoryRepository.save(category);
