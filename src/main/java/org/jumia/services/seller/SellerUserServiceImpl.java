@@ -45,7 +45,7 @@ public class SellerUserServiceImpl implements SellerUserService {
         User currentUser = currentUserProvider.getAuthenticatedUser();
         RoleValidator.validateRole(currentUser, org.jumia.data.models.Role.SELLER);
 
-        currentUser.setStoreName(request.getStoreName());
+        currentUser.setStoreName(Mapper.formatFullName(request.getStoreName()));
         User updatedSeller = userRepository.save(currentUser);
         return Mapper.toResponse(updatedSeller);
     }
