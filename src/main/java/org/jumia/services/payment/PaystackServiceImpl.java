@@ -8,7 +8,6 @@ import org.jumia.data.respositories.UserRepository;
 import org.jumia.dtos.requests.InitiatePaymentRequest;
 import org.jumia.dtos.responses.InitiatePaymentResponse;
 import org.jumia.exceptions.ResourceNotFoundException;
-import org.jumia.services.payment.PaystackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
