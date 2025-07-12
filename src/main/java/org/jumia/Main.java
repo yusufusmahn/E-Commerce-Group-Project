@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.jumia", "seed"})
+
 public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
