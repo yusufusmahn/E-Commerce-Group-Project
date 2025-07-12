@@ -17,9 +17,7 @@ public class RoleValidator {
         roleHierarchy.put(Role.CUSTOMER, Set.of(Role.CUSTOMER));
     }
 
-/* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
 
-/* <<<<<<<<<<  be12ee83-b8e8-4f0b-8b3a-4da69573b849  >>>>>>>>>>> */
     public static boolean hasRole(User user, Role requiredRole) {
         if (user.getRoles() == null || user.getRoles().isEmpty()) return false;
 
