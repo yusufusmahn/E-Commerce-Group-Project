@@ -1,14 +1,24 @@
-# Use official OpenJDK 21 lightweight image
-FROM eclipse-temurin:21-jdk-alpine
+# ---------- STAGE 1: Build JAR ----------
+FROM eclipse-temurin:21-jdk-alpine as builder
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy the JAR file into the container
-COPY target/E-COMMERCE-JUMIA-1.0-SNAPSHOT.jar app.jar
+# Copy everything (including .mvn, pom.xml, src, etc.)
+COPY . .
 
-# Expose port 1111
+# Build the project and skip tests to make it faster
+RUN ./mvnw clean package -DskipTests
+
+# ---------- STAGE 2: Run app ----------
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+# Copy built JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose the same port your app uses
 EXPOSE 1111
 
-# Run the application
+# Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
