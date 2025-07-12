@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = new Category();
-        category.setName(request.getName());
+        category.setName(Mapper.formatFullName(request.getName()));
         category.setDescription(request.getDescription());
 
         Category saved = categoryRepository.save(category);
