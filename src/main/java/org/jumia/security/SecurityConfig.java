@@ -48,6 +48,11 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                                .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
                                 .requestMatchers("/api/seller/**").hasRole("SELLER")
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
 //                        .requestMatchers("/api/seller/**").hasAuthority("ROLE_SELLER")
 
                                 .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
